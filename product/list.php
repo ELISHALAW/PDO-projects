@@ -18,7 +18,7 @@ if (is_post()) {
 $search = req('search');
 
 // Pagination setup
-$itemsPerPage = 8; // how many products per page
+$itemsPerPage = 12; // how many products per page
 $page = max(1, (int)req('page')); // current page, at least 1
 $offset = ($page - 1) * $itemsPerPage;
 
