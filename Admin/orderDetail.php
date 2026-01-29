@@ -1,5 +1,5 @@
 <?php
- include './headandfoot/head.php';
+include './headandfoot/head.php';
 
 // Get the order_id from the URL
 $order_id = isset($_GET['id']) ? (int) $_GET['id'] : 0;
@@ -49,6 +49,7 @@ if ($order_id <= 0) {
 
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -81,16 +82,19 @@ if ($order_id <= 0) {
             margin-bottom: 20px;
         }
 
-        .order-info, .user-info {
+        .order-info,
+        .user-info {
             margin-bottom: 20px;
         }
 
-        .order-info h3, .user-info h3 {
+        .order-info h3,
+        .user-info h3 {
             color: black;
             margin-bottom: 10px;
         }
 
-        .order-info p, .user-info p {
+        .order-info p,
+        .user-info p {
             margin: 5px 0;
             color: #333;
         }
@@ -101,7 +105,8 @@ if ($order_id <= 0) {
             margin-top: 20px;
         }
 
-        .items-table th, .items-table td {
+        .items-table th,
+        .items-table td {
             padding: 10px;
             text-align: left;
             border-bottom: 1px solid #ddd;
@@ -134,6 +139,7 @@ if ($order_id <= 0) {
         }
     </style>
 </head>
+
 <body>
     <div class="container">
         <h2>Order Details</h2>
@@ -148,19 +154,19 @@ if ($order_id <= 0) {
             <!-- Order Information -->
             <div class="order-info">
                 <h3>Order Information</h3>
-                <p><strong>Order ID:</strong> <?php echo htmlspecialchars($order['order_id']); ?></p>
-                <p><strong>Date:</strong> <?php echo htmlspecialchars($order['date']); ?></p>
-                <p><strong>Item Count:</strong> <?php echo htmlspecialchars($order['count']); ?></p>
+                <p><strong>Order ID:</strong> <?php echo e($order['order_id']); ?></p>
+                <p><strong>Date:</strong> <?php echo e($order['date']); ?></p>
+                <p><strong>Item Count:</strong> <?php echo e($order['count']); ?></p>
                 <p><strong>Total:</strong>RM<?php echo number_format($order['total'], 2); ?></p>
             </div>
 
             <!-- User Information -->
             <div class="user-info">
                 <h3>User Information</h3>
-                <p><strong>User ID:</strong> <?php echo htmlspecialchars($order['user_id']); ?></p>
-                <p><strong>Name:</strong> <?php echo htmlspecialchars($order['name'] ?? 'N/A'); ?></p>
-                <p><strong>Username:</strong> <?php echo htmlspecialchars($order['username'] ?? 'N/A'); ?></p>
-                <p><strong>Email:</strong> <?php echo htmlspecialchars($order['email'] ?? 'N/A'); ?></p>
+                <p><strong>User ID:</strong> <?php echo e($order['user_id']); ?></p>
+                <p><strong>Name:</strong> <?php echo e($order['name'] ?? 'N/A'); ?></p>
+                <p><strong>Username:</strong> <?php echo e($order['username'] ?? 'N/A'); ?></p>
+                <p><strong>Email:</strong> <?php echo e($order['email'] ?? 'N/A'); ?></p>
             </div>
 
             <!-- Order Items -->
@@ -198,6 +204,7 @@ if ($order_id <= 0) {
         <a href="orderlist.php" class="back-link">Back to Homepage</a>
     </div>
 </body>
+
 </html>
 
 
