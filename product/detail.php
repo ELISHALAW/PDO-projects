@@ -36,27 +36,33 @@ if (!$p) {
 <style>
     body {
         font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        background: #f5f5f5;
+        background: #f9f9f9;
         color: #333;
+        line-height: 1.6;
     }
 
     .product-detail-container {
-        max-width: 800px;
-        margin: 50px auto;
+        max-width: 900px;
+        margin: 60px auto;
         background: #fff;
         padding: 30px;
-        border-radius: 10px;
-        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        border-radius: 12px;
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+        transition: transform 0.3s ease;
+    }
+
+    .product-detail-container:hover {
+        transform: translateY(-3px);
     }
 
     #photo {
         display: block;
-        margin: 0 auto 20px;
-        border-radius: 10px;
-        width: 250px;
-        height: 250px;
+        margin: 0 auto 25px;
+        border-radius: 12px;
+        width: 300px;
+        height: 300px;
         object-fit: cover;
-        box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
         transition: transform 0.3s ease;
     }
 
@@ -68,74 +74,87 @@ if (!$p) {
         width: 100%;
         border-collapse: collapse;
         margin-top: 20px;
+        font-size: 15px;
     }
 
-    .table.detail th, .table.detail td {
-        padding: 12px 15px;
-        border-bottom: 1px solid #ccc;
-        text-align: left;
+    .table.detail th,
+    .table.detail td {
+        padding: 14px 18px;
+        border-bottom: 1px solid #e0e0e0;
+        vertical-align: top;
     }
 
     .table.detail th {
-        background-color: black;
-        color: white;
-        width: 150px;
+        background-color: #222;
+        color: #fff;
+        width: 160px;
+        text-align: left;
+        border-radius: 8px 0 0 8px;
     }
 
-    .table.detail tr:hover {
-        background-color: #f1f1f1;
+    .table.detail tr:hover td {
+        background-color: #f7f7f7;
     }
 
     .quantity-form {
         margin-top: 10px;
+        display: flex;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 10px;
     }
 
     .quantity-form label {
         font-weight: bold;
+        margin-right: 5px;
     }
 
     .quantity-form input[type="number"] {
         width: 70px;
         padding: 6px;
-        margin-right: 10px;
-        border-radius: 5px;
+        border-radius: 6px;
         border: 1px solid #ccc;
     }
 
     .quantity-form button {
-        background-color: #28a745;
-        color: white;
-        padding: 8px 15px;
+        background-color: #007BFF;
+        color: #fff;
+        padding: 8px 18px;
         border: none;
-        border-radius: 5px;
+        border-radius: 6px;
         cursor: pointer;
         transition: background-color 0.3s ease;
     }
 
     .quantity-form button:hover {
-        background-color: #218838;
+        background-color: #0056b3;
     }
 
     .back-link {
         display: inline-block;
-        margin-top: 20px;
+        margin-top: 25px;
         text-decoration: none;
         color: #007BFF;
-        font-weight: bold;
+        font-weight: 600;
+        transition: color 0.2s ease;
     }
 
     .back-link:hover {
+        color: #0056b3;
         text-decoration: underline;
     }
 
+    /* Stock badges */
     .stock-badge {
         display: inline-block;
-        padding: 5px 10px;
-        border-radius: 20px;
+        padding: 6px 12px;
+        border-radius: 25px;
         font-size: 14px;
-        color: white;
-        background-color: #6c757d;
+        color: #fff;
+        font-weight: 600;
         margin-left: 10px;
+        min-width: 90px;
+        text-align: center;
     }
 
     .stock-available {
@@ -144,17 +163,34 @@ if (!$p) {
 
     .stock-low {
         background-color: #ffc107;
-        color: black;
+        color: #333;
     }
 
     .stock-out {
         background-color: #dc3545;
     }
+
+    /* Responsive tweaks */
+    @media (max-width: 600px) {
+        .product-detail-container {
+            padding: 20px;
+        }
+
+        #photo {
+            width: 100%;
+            height: auto;
+        }
+
+        .table.detail th,
+        .table.detail td {
+            padding: 10px 12px;
+        }
+    }
 </style>
 
 <!-- Product Detail Content -->
 <div class="product-detail-container">
-    <img src="../products/<?= e($p->image) ?>" id="photo" alt="Product Image">
+    <img src="../products/<?= e($p->image) ?>" id="photo" alt="<?= e($p->Product_name) ?>">
 
     <table class="table detail">
         <tr>
@@ -189,7 +225,7 @@ if (!$p) {
             <td><?= nl2br(e($p->detail)) ?></td>
         </tr>
         <tr>
-            <th>Unit</th>
+            <th>Quantity</th>
             <td>
                 <?php
                 $cart = get_cart();
@@ -197,8 +233,8 @@ if (!$p) {
                 ?>
                 <form method="post" class="quantity-form">
                     <?= html_hidden('id', $p->product_id) ?>
-                    <label>Quantity:</label>
-                    <?= inputNumber('number','unit',1,$stock,e($unit)) ?>
+                    <label for="unit">Qty:</label>
+                    <?= inputNumber('number', 'unit', 1, $stock, e($unit)) ?>
                     <button type="submit">Add to Cart</button>
                     <?= $unit ? '✅' : '' ?>
                 </form>
@@ -210,7 +246,6 @@ if (!$p) {
 </div>
 
 <script>
+    // Submit form on select change if any (from inputNumber)
     $('select').on('change', e => e.target.form.submit());
 </script>
-
-<?php include '../foot.php'; ?>

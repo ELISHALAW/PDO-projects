@@ -5,8 +5,12 @@ use PHPMailer\PHPMailer\Exception;
 use PHPMailer\PHPMailer\SMTP;
 
 
+error_reporting(E_ALL & ~E_NOTICE & ~E_WARNING);
+ini_set('display_errors', 0);
+
+
 if (session_status() === PHP_SESSION_NONE) {
-    session_start();
+    @session_start();
 
     session_regenerate_id(true);
 }

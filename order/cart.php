@@ -106,7 +106,6 @@ $_title = 'Order | Shopping Cart';
     .checkout-btn:hover {
         background-color: darkgreen;
     }
-
 </style>
 
 <table class="table">
@@ -175,7 +174,6 @@ $_title = 'Order | Shopping Cart';
 <a href="../product/list.php">Back to Product page</a>
 
 <?php
-include '../foot.php';
 
 // Utility Functions
 function remove_from_cart($id)
