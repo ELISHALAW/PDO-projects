@@ -16,7 +16,7 @@ if (session_status() === PHP_SESSION_NONE) {
 }
 
 try {
-    $_db = new PDO('mysql:lhost=localhost;dbname=db;charset=utf8', 'root', '', [
+    $_db = new PDO('mysql:lhost=localhost;dbname=nextgen;charset=utf8', 'root', '', [
         PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_OBJ,
         PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION
     ]);
