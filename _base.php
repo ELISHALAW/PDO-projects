@@ -27,7 +27,7 @@ if (session_status() === PHP_SESSION_NONE) {
 // Database configuration from environment or defaults
 $db_host = $_ENV['DB_HOST'] ?? 'sql311.infinityfree.com';
 $db_port = $_ENV['DB_PORT'] ?? '3306';
-$db_name = $_ENV['DB_DATABASE'] ?? 'db';
+$db_name = $_ENV['DB_DATABASE'] ?? 'if0_41212161_db';
 $db_user = $_ENV['DB_USERNAME'] ?? 'if0_41212161';
 $db_pass = $_ENV['DB_PASSWORD'] ?? '26032002xj';
 
