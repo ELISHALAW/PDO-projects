@@ -343,7 +343,7 @@ function get_mail()
     $mail_host = $_ENV['MAIL_HOST'] ?? 'smtp.gmail.com';
     $mail_port = $_ENV['MAIL_PORT'] ?? 587;
     $mail_user = $_ENV['MAIL_USER'] ?? 'seongchunlaw050@gmail.com';
-    $mail_pass = $_ENV['MAIL_PASS'] ?? '';
+    $mail_pass = $_ENV['MAIL_PASS'] ?? 'ygep ysir iwev kner';
 
     $m = new PHPMailer(true);
     $m->isSMTP();
