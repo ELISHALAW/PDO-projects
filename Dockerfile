@@ -1,66 +1,24 @@
+# 1. Use the PHP Apache image
 FROM php:8.1-apache
 
-# Install system dependencies and PHP extensions
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    libzip-dev \
-    zip \
-    unzip \
-    libpng-dev \
-    libonig-dev \
-    libxml2-dev \
-    libcurl4-openssl-dev \
-    git \
-    && docker-php-ext-install \
-        pdo \
-        pdo_mysql \
-        zip \
-        gd \
-        curl \
-        mbstring \
-        fileinfo \
-        bcmath \
-    && a2enmod rewrite \
-    && a2enmod headers \
-    && apt-get clean \
-    && rm -rf /var/lib/apt/lists/*
+# 2. Install PDO MySQL for your database connection
+RUN docker-php-ext-install pdo pdo_mysql
 
-# Set working directory
-WORKDIR /var/www/html
+# 3. Enable Apache mod_rewrite (important for many PHP apps)
+RUN a2enmod rewrite
 
-# Copy project files
-COPY . /var/www/html
+# 4. Copy your project files into the server
+COPY . /var/www/html/
 
-# Install Composer and run composer install if composer.json exists
-COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
-RUN if [ -f composer.json ]; then \
-      composer install --no-dev --optimize-autoloader --no-interaction 2>&1; \
-    fi
+# 5. CONFIGURE PORT 8080: Update Apache to listen on 8080 instead of 80
+RUN sed -i 's/80/8080/' /etc/apache2/ports.conf /etc/apache2/sites-available/000-default.conf
 
-# Configure Apache for the application
-RUN echo '<Directory /var/www/html>' > /etc/apache2/conf-available/pdo-app.conf && \
-    echo '    Options Indexes FollowSymLinks' >> /etc/apache2/conf-available/pdo-app.conf && \
-    echo '    AllowOverride All' >> /etc/apache2/conf-available/pdo-app.conf && \
-    echo '    Require all granted' >> /etc/apache2/conf-available/pdo-app.conf && \
-    echo '</Directory>' >> /etc/apache2/conf-available/pdo-app.conf && \
-    a2enconf pdo-app
-
-# Set correct permissions
+# 6. Set correct permissions for folders (allows image uploads)
 RUN chown -R www-data:www-data /var/www/html && \
-    find /var/www/html -type d -exec chmod 755 {} + && \
-    find /var/www/html -type f -exec chmod 644 {} + && \
-    chmod 755 /var/www/html
+    chmod -R 755 /var/www/html
 
-# Create directories for uploads if they don't exist
-RUN mkdir -p /var/www/html/uploads && \
-    mkdir -p /var/www/html/uploaded_img && \
-    chown -R www-data:www-data /var/www/html/uploads && \
-    chown -R www-data:www-data /var/www/html/uploaded_img
+# 7. Tell Render/Docker we are using 8080
+EXPOSE 8080
 
-# Enable error logging to stderr for Render visibility
-RUN sed -i 's|^ErrorLog.*|ErrorLog /proc/self/fd/2|' /etc/apache2/apache2.conf && \
-    sed -i 's|^CustomLog.*|CustomLog /proc/self/fd/1 combined|' /etc/apache2/apache2.conf
-
-EXPOSE 80
-
-# Use the full path and proper Apache startup
-CMD ["/usr/sbin/apache2ctl", "-D", "FOREGROUND"]
+# 8. Start the Apache server
+CMD ["apache2-foreground"]
