@@ -8,6 +8,15 @@ use PHPMailer\PHPMailer\SMTP;
 error_reporting(E_ALL & ~E_NOTICE & ~E_WARNING);
 ini_set('display_errors', 0);
 
+// Load environment variables from .env file if it exists (local development)
+if (file_exists(__DIR__ . '/.env')) {
+    $lines = file(__DIR__ . '/.env', FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+    foreach ($lines as $line) {
+        if (strpos($line, '#') === 0 || strpos($line, '=') === false) continue;
+        [$key, $value] = explode('=', $line, 2);
+        $_ENV[trim($key)] = trim($value);
+    }
+}
 
 if (session_status() === PHP_SESSION_NONE) {
     @session_start();
@@ -15,8 +24,15 @@ if (session_status() === PHP_SESSION_NONE) {
     session_regenerate_id(true);
 }
 
+// Database configuration from environment or defaults
+$db_host = $_ENV['DB_HOST'] ?? 'localhost';
+$db_port = $_ENV['DB_PORT'] ?? '3306';
+$db_name = $_ENV['DB_DATABASE'] ?? 'db';
+$db_user = $_ENV['DB_USERNAME'] ?? 'root';
+$db_pass = $_ENV['DB_PASSWORD'] ?? '';
+
 try {
-    $_db = new PDO('mysql:lhost=localhost;dbname=db;charset=utf8', 'root', '', [
+    $_db = new PDO("mysql:host=$db_host;port=$db_port;dbname=$db_name;charset=utf8", $db_user, $db_pass, [
         PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_OBJ,
         PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION
     ]);
@@ -323,14 +339,19 @@ function get_mail()
     require_once './vendor/phpmailer/phpmailer/src/SMTP.php';
     require_once './vendor/phpmailer/phpmailer/src/Exception.php';
 
+    // Mail configuration from environment or defaults
+    $mail_host = $_ENV['MAIL_HOST'] ?? 'smtp.gmail.com';
+    $mail_port = $_ENV['MAIL_PORT'] ?? 587;
+    $mail_user = $_ENV['MAIL_USER'] ?? 'seongchunlaw050@gmail.com';
+    $mail_pass = $_ENV['MAIL_PASS'] ?? '';
 
     $m = new PHPMailer(true);
     $m->isSMTP();
     $m->SMTPAuth = true;
-    $m->Host = 'smtp.gmail.com';
-    $m->Port = 587;
-    $m->Username = "seongchunlaw050@gmail.com";
-    $m->Password = 'ygep ysir iwev kner';
+    $m->Host = $mail_host;
+    $m->Port = (int)$mail_port;
+    $m->Username = $mail_user;
+    $m->Password = $mail_pass;
     $m->CharSet = 'utf-8';
     $m->setFrom($m->Username, 'Admin');
 
