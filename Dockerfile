@@ -19,6 +19,3 @@ RUN chown -R www-data:www-data /var/www/html && \
 
 # 7. Tell Render/Docker we are using 8080
 EXPOSE 8080
-
-# 8. Start the Apache server
-CMD ["apache2-foreground"]
