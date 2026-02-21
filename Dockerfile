@@ -62,4 +62,5 @@ RUN sed -i 's|^ErrorLog.*|ErrorLog /proc/self/fd/2|' /etc/apache2/apache2.conf &
 
 EXPOSE 80
 
-CMD ["apache2-foreground"]
+# Use the full path and proper Apache startup
+CMD ["/usr/sbin/apache2ctl", "-D", "FOREGROUND"]
