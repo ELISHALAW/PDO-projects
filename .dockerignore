@@ -1,0 +1,12 @@
+vendor
+node_modules
+.git
+.env
+uploads
+uploaded_img
+productImage
+video
+Homepage\customerImage
+*.log
+*.cache
+composer.lock

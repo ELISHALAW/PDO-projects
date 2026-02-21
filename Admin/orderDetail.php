@@ -17,7 +17,7 @@ if ($order_id <= 0) {
     $stmt = $_db->prepare("
         SELECT 
             o.order_id, o.date, o.count, o.total,
-            u.user_id, u.name, u.username, u.email
+            u.user_id, u.name, u.username, u.email, u.phone_number
         FROM orders o
         LEFT JOIN user u ON o.user_id = u.user_id
         WHERE o.order_id = :order_id
@@ -167,6 +167,7 @@ if ($order_id <= 0) {
                 <p><strong>Name:</strong> <?php echo e($order['name'] ?? 'N/A'); ?></p>
                 <p><strong>Username:</strong> <?php echo e($order['username'] ?? 'N/A'); ?></p>
                 <p><strong>Email:</strong> <?php echo e($order['email'] ?? 'N/A'); ?></p>
+                <p><strong>Phone Number:</strong> <?php echo e($order['phone_number'] ?? 'N/A'); ?></p>
             </div>
 
             <!-- Order Items -->
