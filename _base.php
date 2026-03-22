@@ -32,7 +32,7 @@ $db_user = $_ENV['DB_USERNAME'] ?? 'root';
 $db_pass = $_ENV['DB_PASSWORD'] ?? '';
 
 try {
-    $_db = new PDO("mysql:host=$db_host;port=$db_port;dbname=$db_name;charset=utf8", $db_user, $db_pass, [
+    $_db = new PDO("mysql:host=localhost;port=3306;dbname=db;charset=utf8", 'root', '', [
         PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_OBJ,
         PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION
     ]);
@@ -340,18 +340,15 @@ function get_mail()
     require_once './vendor/phpmailer/phpmailer/src/Exception.php';
 
     // Mail configuration from environment or defaults
-    $mail_host = $_ENV['MAIL_HOST'] ?? 'smtp.gmail.com';
-    $mail_port = $_ENV['MAIL_PORT'] ?? 587;
-    $mail_user = $_ENV['MAIL_USER'] ?? 'seongchunlaw050@gmail.com';
-    $mail_pass = $_ENV['MAIL_PASS'] ?? 'ygep ysir iwev kner';
+
 
     $m = new PHPMailer(true);
     $m->isSMTP();
     $m->SMTPAuth = true;
-    $m->Host = $mail_host;
-    $m->Port = (int)$mail_port;
-    $m->Username = $mail_user;
-    $m->Password = $mail_pass;
+    $m->Host = 'smtp.gmail.com';
+    $m->Port = 587;
+    $m->Username = "seongchunlaw050@gmail.com";
+    $m->Password = 'voro vlvz zpat osmd';
     $m->CharSet = 'utf-8';
     $m->setFrom($m->Username, 'Admin');
 
