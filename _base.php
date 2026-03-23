@@ -6,7 +6,7 @@ use PHPMailer\PHPMailer\SMTP;
 
 
 error_reporting(E_ALL & ~E_NOTICE & ~E_WARNING);
-ini_set('display_errors', 0);
+ini_set('display_errors', 1);
 
 // Load environment variables from .env file if it exists (local development)
 if (file_exists(__DIR__ . '/.env')) {
@@ -32,12 +32,17 @@ $db_user = $_ENV['DB_USERNAME'] ?? 'root';
 $db_pass = $_ENV['DB_PASSWORD'] ?? '';
 
 try {
-    $_db = new PDO("mysql:host=localhost;port=3306;dbname=db;charset=utf8", 'root', '', [
+    // Use the variables defined on lines 28-32
+    $dsn = "mysql:host=$db_host;port=$db_port;dbname=$db_name;charset=utf8";
+
+    $_db = new PDO($dsn, $db_user, $db_pass, [
         PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_OBJ,
         PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION
     ]);
 } catch (PDOException $e) {
-    echo "Connection failed" . $e->getMessage();
+    // In a Docker environment, this will now catch connection issues 
+    // to the 'db-container' service.
+    echo "Connection failed: " . $e->getMessage();
 }
 
 

@@ -1,0 +1,27 @@
+version: '3.8'
+
+services:
+  # The Web Server (PHP + Apache)
+  php-app:
+    build: .
+    ports:
+      - "8080:80"
+    volumes:
+      - .:/var/www/html
+    environment:
+      - DB_HOST=db-container
+      - DB_DATABASE=pdo_project
+      - DB_USERNAME=root
+      - DB_PASSWORD=secret
+    depends_on:
+      - db-container
+
+  # The Database (MySQL)
+  db-container:
+    image: mysql:8.0
+    restart: always
+    environment:
+      - MYSQL_DATABASE=pdo_project
+      - MYSQL_ROOT_PASSWORD=secret
+    ports:
+      - "3307:3306"
