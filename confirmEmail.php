@@ -52,12 +52,12 @@ if (is_post()) {
             $m->isHTML(true);
             $m->Subject = 'Password reset Request';
             $m->Body = "
-        <p>Dear " . e($user['name'] ?? 'User') . ",</p>
-        <h2 style='color:red;'>Reset Your Password</h2>
-        <p>Click <a href='$url'>here</a> to reset your password. This link is valid for 5 minutes.</p>
-        <p>If you didn't request this, please ignore this email.</p>
-        <p>Best Regards,</p>
-        <p><strong>Admin</strong></p>";
+            <p>Dear " . e($user['name'] ?? 'User') . ",</p>
+            <h2 style='color:red;'>Reset Your Password</h2>
+            <p>Click <a href='$url'>here</a> to reset your password. This link is valid for 5 minutes.</p>
+            <p>If you didn't request this, please ignore this email.</p>
+            <p>Best Regards,</p>
+            <p><strong>Admin</strong></p>";
 
             if (!$m->send()) {
                 error_log("Mailer Error: " . $m->ErrorInfo);

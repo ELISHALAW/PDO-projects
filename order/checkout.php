@@ -33,7 +33,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['checkout'])) {
     try {
         $_db->beginTransaction();
 
-        $orderStm = $_db->prepare('INSERT INTO `orders` (date, user_id) VALUES (NOW(), ?)');
+        // CHANGED: Added 'count' and 'total' with 0 to avoid "No default value" error in MySQL 8.0
+        $orderStm = $_db->prepare('INSERT INTO `orders` (date, user_id, count, total) VALUES (NOW(), ?, 0, 0)');
         $orderStm->execute([$_SESSION['id']]);
         $orderId = $_db->lastInsertId();
 
@@ -54,7 +55,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['checkout'])) {
         foreach ($cart as $product_id => $unit) {
             $unit = (int)$unit;
             $itemStm->execute([
-                $orderId, $product_id, $product_id, $unit, $product_id, $unit
+                $orderId,
+                $product_id,
+                $product_id,
+                $unit,
+                $product_id,
+                $unit
             ]);
             $stockStm->execute([
                 ':unit' => $unit,
@@ -62,6 +68,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['checkout'])) {
             ]);
         }
 
+        // This calculates the final sums and updates the 0s we inserted earlier
         $totStm = $_db->prepare('
             UPDATE `orders`
                 SET count = (SELECT SUM(unit) FROM order_item WHERE order_id = ?),
@@ -76,7 +83,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['checkout'])) {
         temp('info', 'Order placed successfully!');
         header("Location: detail.php?id=$orderId");
         exit;
-
     } catch (Exception $e) {
         $_db->rollBack();
         $error = 'Failed to process order: ' . $e->getMessage();
@@ -86,4 +92,3 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['checkout'])) {
 }
 
 die("Invalid access. <a href='cart.php'>Go back to cart</a>");
-?>
