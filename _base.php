@@ -33,7 +33,7 @@ $db_pass = $_ENV['DB_PASSWORD'] ?? 'secret';
 
 try {
     // Use the variables defined on lines 28-32
-    $dsn = "mysql:host=db-container;port=3306;dbname=pdo_project;charset=utf8";
+    $dsn = "mysql:host=localhost;port=3306;dbname=db;charset=utf8";
 
     $_db = new PDO($dsn, $db_user, $db_pass, [
         PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_OBJ,
