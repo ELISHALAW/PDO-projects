@@ -33,219 +33,105 @@ if (!$p) {
 ?>
 
 <!-- CSS Styling -->
-<style>
-    body {
-        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        background: #f9f9f9;
-        color: #333;
-        line-height: 1.6;
-    }
+<script src="https://cdn.tailwindcss.com"></script>
 
-    .product-detail-container {
-        max-width: 900px;
-        margin: 60px auto;
-        background: #fff;
-        padding: 30px;
-        border-radius: 12px;
-        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
-        transition: transform 0.3s ease;
-    }
+<div class="max-w-4xl mx-auto my-12 px-4 sm:px-6 antialiased text-slate-800">
+    
+    <div class="mb-6">
+        <a href="list.php" class="inline-flex items-center text-sm font-semibold text-slate-500 hover:text-blue-600 transition-colors duration-200 group">
+            <span class="mr-2 transform group-hover:-translate-x-1 transition-transform duration-200">←</span> 
+            Back to Product List
+        </a>
+    </div>
 
-    .product-detail-container:hover {
-        transform: translateY(-3px);
-    }
+    <div class="bg-white rounded-2xl border border-slate-200 shadow-xl shadow-slate-100/50 overflow-hidden grid grid-cols-1 md:grid-cols-2 gap-8 p-6 sm:p-8">
+        
+        <div class="w-full aspect-square rounded-xl overflow-hidden bg-slate-50 border border-slate-100 relative group">
+            <img 
+                src="../products/<?= e($p->image) ?>" 
+                alt="<?= e($p->Product_name) ?>" 
+                class="absolute inset-0 w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-500 ease-out"
+            >
+        </div>
 
-    #photo {
-        display: block;
-        margin: 0 auto 25px;
-        border-radius: 12px;
-        width: 300px;
-        height: 300px;
-        object-fit: cover;
-        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
-        transition: transform 0.3s ease;
-    }
+        <div class="flex flex-col justify-between space-y-6">
+            
+            <div class="space-y-4">
+                <div class="inline-flex items-center px-2.5 py-0.5 rounded-md text-xs font-mono font-bold bg-slate-100 text-slate-500 border border-slate-200/60 select-none">
+                    ID: <?= e($p->product_id) ?>
+                </div>
 
-    #photo:hover {
-        transform: scale(1.05);
-    }
+                <h1 class="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
+                    <?= e($p->Product_name) ?>
+                </h1>
 
-    .table.detail {
-        width: 100%;
-        border-collapse: collapse;
-        margin-top: 20px;
-        font-size: 15px;
-    }
+                <div class="flex flex-wrap items-center gap-3 pt-1">
+                    <div class="text-2xl font-black text-blue-600 tracking-tight">
+                        RM <?= number_format($p->price, 2) ?>
+                    </div>
+                    
+                    <div>
+                        <?php
+                        $stock = (int)$p->quantity;
+                        if ($stock > 10) {
+                            echo "<span class='inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200/60 shadow-xs'>● In stock ($stock)</span>";
+                        } elseif ($stock > 0) {
+                            echo "<span class='inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold bg-amber-50 text-amber-700 border border-amber-200/60 shadow-xs'>⚠️ Low stock ($stock left)</span>";
+                        } else {
+                            echo "<span class='inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold bg-rose-50 text-rose-700 border border-rose-200/60 shadow-xs'>✕ Out of stock</span>";
+                        }
+                        ?>
+                    </div>
+                </div>
 
-    .table.detail th,
-    .table.detail td {
-        padding: 14px 18px;
-        border-bottom: 1px solid #e0e0e0;
-        vertical-align: top;
-    }
+                <hr class="border-slate-100 my-4">
 
-    .table.detail th {
-        background-color: #222;
-        color: #fff;
-        width: 160px;
-        text-align: left;
-        border-radius: 8px 0 0 8px;
-    }
+                <div class="space-y-1.5">
+                    <h4 class="text-xs font-bold text-slate-400 uppercase tracking-wider select-none">Details</h4>
+                    <p class="text-slate-600 text-sm leading-relaxed whitespace-pre-line bg-slate-50/50 rounded-xl p-4 border border-slate-100">
+                        <?= nl2br(e($p->detail)) ?>
+                    </p>
+                </div>
+            </div>
 
-    .table.detail tr:hover td {
-        background-color: #f7f7f7;
-    }
-
-    .quantity-form {
-        margin-top: 10px;
-        display: flex;
-        align-items: center;
-        flex-wrap: wrap;
-        gap: 10px;
-    }
-
-    .quantity-form label {
-        font-weight: bold;
-        margin-right: 5px;
-    }
-
-    .quantity-form input[type="number"] {
-        width: 70px;
-        padding: 6px;
-        border-radius: 6px;
-        border: 1px solid #ccc;
-    }
-
-    .quantity-form button {
-        background-color: #007BFF;
-        color: #fff;
-        padding: 8px 18px;
-        border: none;
-        border-radius: 6px;
-        cursor: pointer;
-        transition: background-color 0.3s ease;
-    }
-
-    .quantity-form button:hover {
-        background-color: #0056b3;
-    }
-
-    .back-link {
-        display: inline-block;
-        margin-top: 25px;
-        text-decoration: none;
-        color: #007BFF;
-        font-weight: 600;
-        transition: color 0.2s ease;
-    }
-
-    .back-link:hover {
-        color: #0056b3;
-        text-decoration: underline;
-    }
-
-    /* Stock badges */
-    .stock-badge {
-        display: inline-block;
-        padding: 6px 12px;
-        border-radius: 25px;
-        font-size: 14px;
-        color: #fff;
-        font-weight: 600;
-        margin-left: 10px;
-        min-width: 90px;
-        text-align: center;
-    }
-
-    .stock-available {
-        background-color: #28a745;
-    }
-
-    .stock-low {
-        background-color: #ffc107;
-        color: #333;
-    }
-
-    .stock-out {
-        background-color: #dc3545;
-    }
-
-    /* Responsive tweaks */
-    @media (max-width: 600px) {
-        .product-detail-container {
-            padding: 20px;
-        }
-
-        #photo {
-            width: 100%;
-            height: auto;
-        }
-
-        .table.detail th,
-        .table.detail td {
-            padding: 10px 12px;
-        }
-    }
-</style>
-
-<!-- Product Detail Content -->
-<div class="product-detail-container">
-    <img src="../products/<?= e($p->image) ?>" id="photo" alt="<?= e($p->Product_name) ?>">
-
-    <table class="table detail">
-        <tr>
-            <th>ID</th>
-            <td><?= e($p->product_id) ?></td>
-        </tr>
-        <tr>
-            <th>Name</th>
-            <td><?= e($p->Product_name) ?></td>
-        </tr>
-        <tr>
-            <th>Price</th>
-            <td>RM <?= number_format($p->price, 2) ?></td>
-        </tr>
-        <tr>
-            <th>Stock</th>
-            <td>
-                <?php
-                $stock = (int)$p->quantity;
-                if ($stock > 10) {
-                    echo "<span class='stock-badge stock-available'>In stock ($stock)</span>";
-                } elseif ($stock > 0) {
-                    echo "<span class='stock-badge stock-low'>Low stock ($stock left)</span>";
-                } else {
-                    echo "<span class='stock-badge stock-out'>Out of stock</span>";
-                }
-                ?>
-            </td>
-        </tr>
-        <tr>
-            <th>Details</th>
-            <td><?= nl2br(e($p->detail)) ?></td>
-        </tr>
-        <tr>
-            <th>Quantity</th>
-            <td>
+            <div class="bg-slate-50 border border-slate-100 rounded-xl p-4 mt-auto">
                 <?php
                 $cart = get_cart();
                 $unit = $cart[$p->product_id] ?? 0;
                 ?>
-                <form method="post" class="quantity-form">
+                <form method="post" class="flex flex-wrap items-center gap-3">
                     <?= html_hidden('id', $p->product_id) ?>
-                    <label for="unit">Qty:</label>
-                    <?= inputNumber('number', 'unit', 1, $stock, e($unit)) ?>
-                    <button type="submit">Add to Cart</button>
-                    <?= $unit ? '✅' : '' ?>
-                </form>
-            </td>
-        </tr>
-    </table>
+                    
+                    <div class="flex items-center space-x-2">
+                        <label for="unit" class="text-xs font-bold text-slate-500 uppercase tracking-wider select-none">Qty:</label>
+                        <div class="[&>input]:w-16 [&>input]:px-2.5 [&>input]:py-1.5 [&>input]:text-center [&>input]:font-semibold [&>input]:text-slate-800 [&>input]:border [&>input]:border-slate-200 [&>input]:rounded-lg [&>input]:bg-white [&>input]:shadow-xs [&>input]:focus:ring-2 [&>input]:focus:ring-blue-500/20 [&>input]:focus:border-blue-500 [&>input]:outline-none">
+                            <?= inputNumber('number', 'unit', 1, $stock, e($unit)) ?>
+                        </div>
+                    </div>
 
-    <a href="list.php" class="back-link">← Back to Product List</a>
+                    <button 
+                        type="submit" 
+                        class="flex-1 min-w-[140px] bg-blue-600 hover:bg-blue-700 text-white font-semibold px-5 py-2 rounded-lg transition duration-150 active:scale-[0.98] cursor-pointer shadow-md shadow-blue-500/10 flex items-center justify-center space-x-1.5 text-sm"
+                        <?= $stock <= 0 ? 'disabled class="opacity-50 cursor-not-allowed bg-slate-300 shadow-none"' : '' ?>
+                    >
+                        <span>🛒</span>
+                        <span>Add to Cart</span>
+                    </button>
+                    
+                    <?php if ($unit): ?>
+                        <span class="inline-flex items-center justify-center bg-emerald-100 text-emerald-800 font-bold h-8 w-8 rounded-lg text-sm select-none" title="Item currently active in your shopping cart">
+                            ✅
+                        </span>
+                    <?php endif; ?>
+                </form>
+            </div>
+
+        </div>
+    </div>
+
 </div>
 
 <script>
-    // Submit form on select change if any (from inputNumber)
+    // Submit form on select change if any (from inputNumber structures)
     $('select').on('change', e => e.target.form.submit());
 </script>

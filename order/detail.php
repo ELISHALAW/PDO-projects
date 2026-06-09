@@ -15,7 +15,7 @@ $stm = $_db->prepare('
     SELECT * FROM `orders`
     WHERE order_id = ? AND user_id = ?
 ');
-$stm->execute([$id, $_SESSION['id']]); // <-- Fixed here
+$stm->execute([$id, $_SESSION['id']]); 
 $o = $stm->fetch();
 if (!$o) {
     temp('error', 'Order not found.');
@@ -38,239 +38,140 @@ $_title = 'Order | Detail';
 
 ?>
 
-<style>
-    /* Detail page modern table + modal */
-    .popup {
-        width: 92px;
-        height: 64px;
-        object-fit: cover;
-        border-radius: 6px;
-        cursor: pointer;
-    }
+<script src="https://cdn.tailwindcss.com"></script>
 
-    #popup-image {
-        display: none;
-        position: fixed;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        max-width: 92%;
-        max-height: 92%;
-        z-index: 1000;
-        box-shadow: 0 8px 30px rgba(2, 6, 23, 0.45);
-        border-radius: 8px;
-        background: #fff;
-        padding: 6px;
-    }
+<div id="popup-background" class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-50 hidden cursor-pointer transition-opacity duration-300" onclick="hidePopup()"></div>
+<img id="popup-image" class="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 max-w-[90%] max-h-[90%] z-50 hidden shadow-2xl rounded-xl border border-slate-200 bg-white p-1.5 cursor-pointer transition-all duration-300" onclick="hidePopup()" alt="Enlarged view">
 
-    #popup-background {
-        display: none;
-        position: fixed;
-        inset: 0;
-        background: rgba(0, 0, 0, 0.6);
-        z-index: 999;
-    }
+<div class="bg-gradient-to-b from-slate-100 via-slate-50 to-blue-50/30 min-h-screen pt-28 pb-16 px-4 sm:px-6 lg:px-8 antialiased text-slate-800">
+    <div class="max-w-5xl mx-auto">
+        
+        <div class="flex flex-col md:flex-row items-start justify-between gap-6 mb-8 bg-white border border-slate-200 rounded-2xl p-6 shadow-xl shadow-slate-100/50">
+            <div class="space-y-2 w-full md:w-auto">
+                <div class="inline-flex items-center px-2.5 py-0.5 rounded-md text-xs font-mono font-bold bg-slate-100 text-slate-500 border border-slate-200/60 select-none">
+                    Receipt Statement Record
+                </div>
+                <h1 class="text-xl sm:text-2xl font-black text-slate-900 tracking-tight">
+                    Order ID: <span class="text-blue-600 font-mono text-lg sm:text-xl font-bold ml-1"><?= htmlspecialchars($o->order_id) ?></span>
+                </h1>
+                <div class="text-sm font-medium text-slate-600 flex flex-wrap items-center gap-x-4 gap-y-1 pt-1">
+                    <span class="flex items-center gap-1.5 text-slate-400">📅 <span class="text-slate-600 font-semibold"><?= htmlspecialchars($o->date) ?></span></span>
+                    <span class="hidden sm:inline text-slate-200">|</span>
+                    <span class="flex items-center gap-1.5 text-slate-400">📦 <span class="text-slate-600 font-semibold"><?= count($arr) ?> unique product item(s)</span></span>
+                </div>
+            </div>
 
-    .detail-wrap {
-        width: 95%;
-        max-width: 1000px;
-        margin: 100px auto;
-        font-family: "Segoe UI", Roboto, Arial, sans-serif;
-    }
-
-    table {
-        width: 100%;
-        margin-top: 12px;
-        border-collapse: separate;
-        box-shadow: 0 6px 18px rgba(13, 38, 63, 0.06);
-        border-radius: 10px;
-        overflow: hidden;
-    }
-
-    table th,
-    table td {
-        padding: 12px 14px;
-    }
-
-    table th {
-        background: linear-gradient(90deg, #0ea5e9, #3b82f6);
-        color: #fff;
-        text-align: left;
-        font-weight: 600;
-    }
-
-    table td {
-        background: #fff;
-        border-bottom: 1px solid #eef3f8;
-    }
-
-    tr:nth-child(even) td {
-        background: #fbfdff;
-    }
-
-    tr:hover td {
-        background: #f7fbff;
-    }
-
-    .right {
-        text-align: right;
-    }
-
-    a {
-        color: #6b21a8;
-        text-decoration: none;
-    }
-
-    a:hover {
-        text-decoration: underline;
-    }
-
-    /* Order meta and summary */
-    .order-meta {
-        display: flex;
-        justify-content: space-between;
-        gap: 18px;
-        align-items: flex-start;
-        margin-bottom: 12px;
-    }
-
-    .order-info {
-        color: #0f172a;
-    }
-
-    .order-info div {
-        margin-bottom: 6px;
-    }
-
-    .muted {
-        color: #64748b;
-        font-size: 13px;
-    }
-
-    .order-summary {
-        background: linear-gradient(90deg, #06b6d4, #3b82f6);
-        color: #fff;
-        padding: 12px 16px;
-        border-radius: 8px;
-        min-width: 180px;
-        text-align: center;
-        box-shadow: 0 8px 18px rgba(59, 130, 246, 0.08);
-    }
-
-    .order-summary .sum-label {
-        font-size: 13px;
-        opacity: 0.95;
-    }
-
-    .order-summary .sum-value {
-        font-size: 20px;
-        font-weight: 700;
-        margin-bottom: 6px;
-    }
-
-    .summary-row td {
-        background: linear-gradient(90deg, #e6f4ff, #f1f8ff);
-        font-weight: 700;
-    }
-
-    .actions-row {
-        display: flex;
-        justify-content: space-between;
-        gap: 12px;
-        margin-top: 12px;
-        align-items: center;
-    }
-
-    .checkout-link {
-        background: linear-gradient(90deg, #059669, #10b981);
-        color: #fff;
-        padding: 10px 16px;
-        border-radius: 8px;
-        text-decoration: none;
-    }
-
-
-    @media (max-width:700px) {
-        .popup {
-            width: 52px;
-            height: 40px;
-        }
-
-        table th,
-        table td {
-            padding: 10px;
-            font-size: 13px;
-        }
-    }
-</style>
-
-<!-- Popup Image Modal -->
-<div id="popup-background" onclick="hidePopup()"></div>
-<img id="popup-image" onclick="hidePopup()">
-
-<div class="detail-wrap">
-    <div class="order-meta">
-        <div class="order-info">
-            <div><strong>Order ID:</strong> <?= htmlspecialchars($o->order_id) ?></div>
-            <div><strong>Date:</strong> <?= htmlspecialchars($o->date) ?></div>
-            <div class="muted"><?= count($arr) ?> item(s)</div>
+            <div class="w-full md:w-auto bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-xl p-4 min-w-[220px] shadow-lg shadow-blue-500/10 flex items-center justify-between md:justify-around gap-4 select-none">
+                <div class="text-center">
+                    <div class="text-[10px] font-bold uppercase tracking-wider text-blue-100/80">Total Items</div>
+                    <div class="text-xl font-black tracking-tight mt-0.5"><?= (int)$o->count ?></div>
+                </div>
+                <div class="h-8 w-px bg-white/20"></div>
+                <div class="text-right md:text-center">
+                    <div class="text-[10px] font-bold uppercase tracking-wider text-blue-100/80">Grand Total</div>
+                    <div class="text-xl font-black tracking-tight mt-0.5 text-amber-300">RM <?= number_format((float)$o->total, 2) ?></div>
+                </div>
+            </div>
         </div>
 
-        <div class="order-summary">
-            <div class="sum-label">Items</div>
-            <div class="sum-value"><?= (int)$o->count ?></div>
-            <div class="sum-label">Total</div>
-            <div class="sum-value">RM <?= number_format((float)$o->total, 2) ?></div>
+        <div class="bg-white rounded-2xl border border-slate-200 shadow-xl shadow-slate-100/40 overflow-hidden mb-6">
+            <div class="overflow-x-auto">
+                <table class="w-full text-left border-collapse whitespace-nowrap">
+                    <thead>
+                        <tr class="bg-slate-900 text-white text-[11px] font-bold uppercase tracking-wider select-none">
+                            <th class="py-4 px-6 text-center w-24">Product ID</th>
+                            <th class="py-4 px-6">Product Description Name</th>
+                            <th class="py-4 px-6 text-right">Price</th>
+                            <th class="py-4 px-6 text-center w-20">Unit</th>
+                            <th class="py-4 px-6 text-right">Subtotal</th>
+                            <th class="py-4 px-6 text-center w-28">Photo Ref</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-100">
+                        <?php foreach ($arr as $i): ?>
+                            <tr class="hover:bg-slate-50/60 transition-colors duration-100 group">
+                                <td class="py-4 px-6 text-center font-mono text-xs font-bold text-slate-400">
+                                    <?= (int)$i->product_id ?>
+                                </td>
+                                
+                                <td class="py-4 px-6 font-semibold text-slate-900 text-sm max-w-[260px] truncate" title="<?= htmlspecialchars($i->Product_name) ?>">
+                                    <?= htmlspecialchars($i->Product_name) ?>
+                                </td>
+                                
+                                <td class="py-4 px-6 text-right font-medium text-slate-600 text-sm font-mono">
+                                    RM <?= number_format((float)$i->price, 2) ?>
+                                </td>
+                                
+                                <td class="py-4 px-6 text-center font-bold text-slate-700 text-sm">
+                                    <?= (int)$i->unit ?>
+                                </td>
+                                
+                                <td class="py-4 px-6 text-right font-bold text-slate-900 text-sm font-mono">
+                                    RM <?= number_format((float)$i->subtotal, 2) ?>
+                                </td>
+                                
+                                <td class="py-4 px-6 text-center">
+                                    <?php if (!empty($i->image)): ?>
+                                        <div class="inline-block w-16 h-11 rounded-lg bg-slate-50 border border-slate-200 overflow-hidden relative shadow-xs hover:shadow-md hover:border-blue-400 transition-all duration-200 group/img shrink-0 cursor-zoom-in">
+                                            <img 
+                                                src="/products/<?= htmlspecialchars($i->image) ?>" 
+                                                class="absolute inset-0 w-full h-full object-cover group-hover/img:scale-105 transition-transform duration-300" 
+                                                onclick="showPopup(this.src)"
+                                                alt="Thumb"
+                                            >
+                                        </div>
+                                    <?php else: ?>
+                                        <span class="text-xs font-bold text-slate-400 italic select-none">No Photo</span>
+                                    <?php endif ?>
+                                </td>
+                            </tr>
+                        <?php endforeach; ?>
+                    </tbody>
+                    
+                    <tfoot>
+                        <tr class="bg-slate-50/80 font-bold border-t border-slate-200/80">
+                            <td colspan="3" class="py-4 px-6 text-slate-500 text-xs text-right uppercase tracking-wider select-none">Calculated Aggregations:</td>
+                            <td class="py-4 px-6 text-center text-slate-900 text-sm bg-slate-100/40">
+                                <span class="inline-flex items-center justify-center px-2 py-0.5 bg-slate-200 text-slate-800 text-xs font-bold rounded">
+                                    <?= (int)$o->count ?> Units
+                                </span>
+                            </td>
+                            <td class="py-4 px-6 text-right text-sm text-blue-600 font-black tracking-tight font-mono">
+                                RM <?= number_format((float)$o->total, 2) ?>
+                            </td>
+                            <td></td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
         </div>
+
+        <div class="flex flex-col sm:flex-row items-center justify-between gap-4 bg-white border border-slate-200 rounded-xl p-4 shadow-sm">
+            <a class="inline-flex items-center text-sm font-semibold text-slate-500 hover:text-blue-600 transition-colors duration-150 group" href="history.php">
+                <span class="mr-2 transform group-hover:-translate-x-1 transition-transform duration-150">←</span> 
+                Back to Purchase History
+            </a>
+            
+            <a class="w-full sm:w-auto inline-flex items-center justify-center space-x-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-6 py-2.5 rounded-xl transition duration-150 active:scale-[0.99] cursor-pointer shadow-md shadow-emerald-500/10 text-sm tracking-wide" href="payment.php">
+                <span>Proceed to Payment</span>
+                <span>➔</span>
+            </a>
+        </div>
+
     </div>
-
-    <table class="table">
-        <tr>
-            <th>Product ID</th>
-            <th>Product Name</th>
-            <th>Price (RM)</th>
-            <th>Unit</th>
-            <th>Subtotal (RM)</th>
-            <th>Photo</th>
-        </tr>
-
-        <?php foreach ($arr as $i): ?>
-            <tr>
-                <td><?= (int)$i->product_id ?></td>
-                <td><?= htmlspecialchars($i->Product_name) ?></td>
-                <td class="right"><?= number_format((float)$i->price, 2) ?></td>
-                <td class="right"><?= (int)$i->unit ?></td>
-                <td class="right"><?= number_format((float)$i->subtotal, 2) ?></td>
-                <td>
-                    <?php if (!empty($i->image)): ?>
-                        <img src="/products/<?= htmlspecialchars($i->image) ?>" class="popup" onclick="showPopup(this.src)">
-                    <?php else: ?>
-                        No Image
-                    <?php endif ?>
-                </td>
-            </tr>
-        <?php endforeach; ?>
-
-        <tr class="summary-row">
-            <td colspan="3"></td>
-            <td class="right"><?= (int)$o->count ?></td>
-            <td class="right"><?= number_format((float)$o->total, 2) ?></td>
-            <td></td>
-        </tr>
-    </table>
-
-    <div class="actions-row">
-        <a href="history.php">← Back to history</a>
-        <a class="checkout-link" href="payment.php">Proceed to Payment →</a>
-    </div>
-
 </div>
 
 <script>
+    // Lightbox Modal Mechanism Event Handler Pipelines
     function showPopup(src) {
-        document.getElementById('popup-image').src = src;
-        document.getElementById('popup-background').style.display = 'block';
-        document.getElementById('popup-image').style.display = 'block';
+        const bg = document.getElementById('popup-background');
+        const img = document.getElementById('popup-image');
+        
+        img.src = src;
+        
+        // Wipe styles cleanly to fallback straight to natural Tailwind state parameters
+        bg.style.display = 'block';
+        img.style.display = 'block';
     }
 
     function hidePopup() {
@@ -279,4 +180,6 @@ $_title = 'Order | Detail';
     }
 </script>
 
-<?php
+<?php 
+include '../foot.php'; 
+?>

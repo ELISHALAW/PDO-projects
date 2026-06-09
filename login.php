@@ -82,32 +82,59 @@ if (is_post()) {
 
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login page</title>
-    <link rel="stylesheet" href="./css/login.css">
+    <script src="https://cdn.tailwindcss.com"></script>
 </head>
 
-<body>
-    <div class="form-container">
-        <form action="login.php" method="POST">
-            <h2>Login</h2>
-            <?php displayError($errors); ?>
+<body class="bg-[url('../images/Laptop.jpg')] bg-cover bg-center bg-no-repeat min-h-screen flex items-center justify-center p-4 antialiased relative">
+    
+    <div class="absolute inset-0 bg-slate-900/40 backdrop-blur-xs pointer-events-none"></div>
 
-            <div class="form-checkbox">
-                <label style="display:inline-flex; align-items:center;">
-                    <?= checkbox('remember', isset($_POST['remember']) || isset($_COOKIE['remember_email'])) ?>
-                    <span class="text">Remember me</span>
-                </label>
+    <div class="w-full max-w-md z-10">
+        <form action="login.php" method="POST" class="bg-white/90 backdrop-blur-md p-8 rounded-2xl shadow-2xl border border-white/20 space-y-6">
+            
+            <div class="text-center space-y-1">
+                <h2 class="text-3xl font-bold tracking-tight text-slate-800">Welcome Back</h2>
+                <p class="text-sm text-slate-500">Please enter your details to sign in</p>
             </div>
 
-            <?= inputField('email', 'usernameEmail', 'example@gmail.com', $usernameEmail) ?><br>
-            <?= inputField('password', 'password', 'Enter your password') ?><br>
+            <?php if (!empty($errors)): ?>
+                <div class="bg-red-50 border-l-4 border-red-500 p-3 rounded text-sm text-red-700">
+                    <?php displayError($errors); ?>
+                </div>
+            <?php endif; ?>
 
-            <?= html_submit('submit', 'submit', 'form-btn', 'Login') ?>
+            <div class="space-y-4 [&_input]:w-full [&_input]:px-4 [&_input]:py-2.5 [&_input]:border [&_input]:border-slate-200 [&_input]:rounded-xl [&_input]:text-slate-800 [&_input]:transition [&_input]:duration-200 [&_input]:focus:outline-none [&_input]:focus:ring-2 [&_input]:focus:ring-blue-500/20 [&_input]:focus:border-blue-500 [&_input]:bg-white/80">
+                <div>
+                    <label class="block text-sm font-medium text-slate-700 mb-1">Email Address</label>
+                    <?= inputField('email', 'usernameEmail', 'example@gmail.com', $usernameEmail) ?>
+                </div>
 
-            <p>Don't have an account? <a href="registration.php">Register now</a></p>
-            <a href="confirmEmail.php">Forgot password?</a>
+                <div>
+                    <label class="block text-sm font-medium text-slate-700 mb-1">Password</label>
+                    <?= inputField('password', 'password', 'Enter your password') ?>
+                </div>
+            </div>
+
+            <div class="flex items-center justify-between text-sm">
+                <label class="flex items-center space-x-2 text-slate-600 cursor-pointer select-none [&_input]:rounded [&_input]:border-slate-300 [&_input]:text-blue-600 [&_input]:focus:ring-blue-500">
+                    <?= checkbox('remember', isset($_POST['remember']) || isset($_COOKIE['remember_email'])) ?>
+                    <span>Remember me</span>
+                </label>
+                <a href="confirmEmail.php" class="font-medium text-blue-600 hover:text-blue-500 hover:underline transition duration-150">Forgot password?</a>
+            </div>
+
+            <div>
+                <?= html_submit('submit', 'submit', 'w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2.5 px-4 rounded-xl transition duration-200 shadow-lg shadow-blue-500/20 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 cursor-pointer text-center block', 'Login') ?>
+            </div>
+
+            <p class="text-center text-sm text-slate-600 pt-2">
+                Don't have an account? 
+                <a href="registration.php" class="font-semibold text-blue-600 hover:text-blue-500 hover:underline transition duration-150">Register now</a>
+            </p>
         </form>
     </div>
-</body>
 
+</body>
 </html>
