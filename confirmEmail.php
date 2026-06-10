@@ -81,24 +81,33 @@ if (is_post()) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Confirm Email</title>
+    <link rel="icon" type="image/png" href="images/computer.webp">
+    <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="./css/confirmEmail.css">
 </head>
+<body class="bg-cover bg-center bg-no-repeat flex items-center justify-center min-h-screen" style="background-image: url('../images/Laptop.jpg');">
+    <div class="bg-white p-8 rounded-lg shadow-md w-full max-w-md">
+        <div class="mb-6 flex justify-center">
+            <img src="../images/Laptop.jpg" alt="Laptop" class="w-24 h-24 object-cover rounded-full">
+        </div>
 
-<body>
-    <div class="form-container">
-        <form action="confirmEmail.php" method="POST">
-            <!-- Display errors if any -->
-            <?= displayError($errors) ?>
+        <form action="confirmEmail.php" method="POST" class="space-y-6">
+            <div class="text-red-600 text-sm">
+                <?= displayError($errors) ?>
+            </div>
 
-            <h2>Please enter your email</h2>
-            <!-- Email input field -->
-            <?= inputField('email', 'email', 'Enter your email address', $email) ?>
-            <!-- Submit button -->
-            <?= html_submit('submit', 'submit', 'form-btn', 'submit') ?>
+            <h2 class="text-2xl font-bold text-gray-800">Please enter your email</h2>
+            
+            <div class="w-full">
+                <div class="w-full">
+                    <?= inputField('email', 'email', 'Enter your email address', $email) ?>
+                </div>
+            </div>
+            <?= html_submit('submit', 'submit', 'w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded transition duration-200', 'submit') ?>
 
-            <p>Back to <a href="login.php">Login</a></p>
+            <p class="text-sm text-gray-600">
+                Back to <a href="login.php" class="text-blue-500 hover:underline">Login</a>
+            </p>
         </form>
     </div>
 </body>
-
-</html>

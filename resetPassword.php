@@ -84,18 +84,31 @@ if (is_post()) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Reset Password</title>
-    <link rel="stylesheet" href="./css/resetPassword.css">
+    <link rel="icon" type="image/png" href="images/computer.webp">
+    <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body>
-    <div class="form-container">
-        <form action="resetPassword.php?token=<?= e($token) ?>" method="POST">
-            <h2>Reset Password</h2>
+<body class="bg-cover bg-center bg-no-repeat bg-fixed flex items-center justify-center min-h-screen" 
+      style="background-image: url('../images/Laptop.jpg');">
 
-            <?= displayError($errors)?>
+    <div class="absolute inset-0 bg-black bg-opacity-40"></div>
 
-            <?= inputField('password','newPassword','Enter your new password','','') ?>
-            <?= inputField('password','confirmPassword','Confirm your new password', '','') ?>
-            <?= html_submit('submit','submit','form-btn','Reset Password') ?>
+    <div class="bg-white p-8 rounded-lg shadow-md w-full max-w-md relative z-10 mx-4">
+        <form action="resetPassword.php?token=<?= e($token) ?>" method="POST" class="space-y-6">
+            <h2 class="text-2xl font-bold text-gray-800 text-center">Reset Password</h2>
+
+            <div class="text-red-600 text-sm">
+                <?= displayError($errors) ?>
+            </div>
+
+            <div class="w-full">
+                <?= inputField('password', 'newPassword', 'Enter your new password', '', '') ?>
+            </div>
+            
+            <div class="w-full">
+                <?= inputField('password', 'confirmPassword', 'Confirm your new password', '', '') ?>
+            </div>
+
+            <?= html_submit('submit', 'submit', 'w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded transition duration-200', 'Reset Password') ?>
         </form>
     </div>
 </body>
