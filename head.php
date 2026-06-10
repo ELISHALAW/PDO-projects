@@ -25,49 +25,58 @@ $reviews = $stmt->fetchAll(PDO::FETCH_ASSOC);
 </head>
 <body class="bg-slate-50 text-slate-800 antialiased font-sans min-h-screen">
 
-    <header class="sticky top-0 z-50 bg-white/95 backdrop-blur-md border-b border-slate-100 shadow-sm shadow-slate-100/40 px-4 sm:px-6 lg:px-8 py-3.5 flex items-center justify-between transition-all duration-300">
-        
-        <input type="checkbox" name="toggler" id="toggler" class="peer hidden">
-        <label for="toggler" class="bar md:hidden text-2xl text-slate-600 hover:text-slate-900 cursor-pointer transition select-none order-2 md:order-none">
-            ☰
-        </label>
-        
-        <div class="flex items-center order-1 md:order-none">
-            <?php if (!empty($query) && is_array($query)) : ?>
-                <a href="../profile.php?id=<?php echo e($query['user_id']); ?>" title="Profile" class="group flex items-center space-x-2.5 font-bold text-xl text-slate-800 tracking-tight transition">
-                    <img class="h-9 w-9 rounded-full object-cover border border-slate-200 shadow-xs group-hover:scale-105 transition duration-200" src="../uploaded_img/<?php echo e($query['image']); ?>" alt="User Avatar">
-                    <span><?php echo e($query['username']); ?><span class="text-orange-500">.</span></span>
+    <header class="sticky top-0 z-50 bg-white/95 backdrop-blur-md border-b border-slate-200 shadow-lg shadow-slate-100/30 transition-all duration-300">
+        <div class="mx-auto flex w-full max-w-7xl items-center justify-between gap-4 px-4 py-4 sm:px-6 lg:px-8">
+            <div class="flex items-center gap-3">
+                <input type="checkbox" name="toggler" id="toggler" class="peer hidden">
+                <label for="toggler" class="bar md:hidden text-2xl text-slate-600 hover:text-slate-900 cursor-pointer transition select-none">
+                    ☰
+                </label>
+                <?php if (!empty($query) && is_array($query)) : ?>
+                <a href="../profile.php?id=<?php echo e($query['user_id']); ?>" title="Profile" class="group flex items-center gap-3 rounded-3xl border border-slate-200 bg-slate-50/80 px-3 py-2 transition hover:border-orange-200 hover:bg-slate-100">
+                    <img class="h-10 w-10 rounded-full object-cover border border-slate-200 shadow-xs transition duration-200" src="../uploaded_img/<?php echo e($query['image']); ?>" alt="User Avatar">
+                    <div class="min-w-0">
+                        <p class="truncate text-sm font-semibold text-slate-900"><?php echo e($query['username']); ?></p>
+                        <p class="text-xs text-slate-500">My Account</p>
+                    </div>
                 </a>
-            <?php else : ?>
-                <a href="login.php" title="Login" class="font-bold text-xl text-slate-800 tracking-tight">
-                    Guest<span class="text-orange-500">.</span>
+                <?php else : ?>
+                <a href="login.php" title="Login" class="inline-flex items-center rounded-3xl border border-slate-200 bg-slate-50 px-4 py-2 text-sm font-semibold text-slate-800 transition hover:bg-slate-100">
+                    Guest<span class="text-orange-500 ml-1">.</span>
                 </a>
-            <?php endif; ?>
+                <?php endif; ?>
+            </div>
+
+            <nav class="hidden md:flex items-center justify-center gap-4 text-sm font-medium text-slate-600">
+                <a href="../index.php" class="rounded-full px-4 py-2 transition duration-150 text-slate-700 hover:bg-slate-100 hover:text-orange-500">Home</a>
+                <a href="../index.php" class="rounded-full px-4 py-2 transition duration-150 text-slate-700 hover:bg-slate-100 hover:text-orange-500">About</a>
+                <a href="../index.php" class="rounded-full px-4 py-2 transition duration-150 text-slate-700 hover:bg-slate-100 hover:text-orange-500">Products</a>
+                <a href="../review.php?id=<?php echo e($query['user_id']); ?>" class="rounded-full px-4 py-2 transition duration-150 text-slate-700 hover:bg-slate-100 hover:text-orange-500">Review</a>
+                <a href="../index.php" class="rounded-full px-4 py-2 transition duration-150 text-slate-700 hover:bg-slate-100 hover:text-orange-500">Location</a>
+            </nav>
+
+            <div class="flex items-center gap-2">
+                <a href="/order/cart.php" class="shoppingCart inline-flex items-center gap-2 rounded-3xl border border-slate-200 bg-slate-100 px-4 py-2 text-sm font-semibold text-slate-700 shadow-sm transition duration-150 hover:bg-orange-50 hover:text-orange-600">
+                    <span>🛒</span>
+                    <span class="hidden sm:inline">Cart</span>
+                    <span class="rounded-full bg-white px-2 py-0.5 text-xs font-bold text-slate-800"><?= cart_quantity() ?></span>
+                </a>
+                <a href="/order/history.php" class="OrderHistory inline-flex items-center gap-2 rounded-3xl border border-slate-200 bg-slate-100 px-4 py-2 text-sm font-semibold text-slate-700 shadow-sm transition duration-150 hover:bg-slate-200">
+                    <span>🧾</span>
+                    <span class="hidden sm:inline">History</span>
+                </a>
+                <a href="../logout.php" class="Logout inline-flex items-center gap-2 rounded-3xl border border-red-100 bg-red-50 px-4 py-2 text-sm font-semibold text-red-600 shadow-sm transition duration-150 hover:bg-red-100" title="Logout">
+                    <span>🚪</span>
+                    <span class="hidden sm:inline">Logout</span>
+                </a>
+            </div>
         </div>
 
-        <nav class="navbar absolute md:relative top-full left-0 w-full md:w-auto bg-white md:bg-transparent border-b border-slate-100 md:border-b-0 p-4 md:p-0 flex flex-col md:flex-row space-y-3 md:space-y-0 md:space-x-8 font-medium text-slate-600 hidden peer-checked:flex md:flex items-start md:items-center shadow-lg md:shadow-none transition-all duration-300">
-            <a href="../index.php" class="hover:text-orange-500 transition duration-150 py-1 md:py-0 w-full md:w-auto">Home</a>
-            <a href="../index.php" class="hover:text-orange-500 transition duration-150 py-1 md:py-0 w-full md:w-auto">About</a>
-            <a href="../index.php" class="hover:text-orange-500 transition duration-150 py-1 md:py-0 w-full md:w-auto">Products</a>
-            <a href="../review.php?id=<?php echo e($query['user_id']); ?>" class="hover:text-orange-500 transition duration-150 py-1 md:py-0 w-full md:w-auto">Review</a>
-            <a href="../index.php" class="hover:text-orange-500 transition duration-150 py-1 md:py-0 w-full md:w-auto">Location</a>
+        <nav class="navbar hidden peer-checked:flex md:hidden flex-col gap-3 border-t border-slate-200 bg-white px-4 pb-4 pt-3 text-sm font-medium text-slate-600 shadow-lg">
+            <a href="../index.php" class="rounded-2xl bg-slate-50 px-4 py-3 text-slate-700 transition duration-150 hover:bg-orange-50 hover:text-orange-600">Home</a>
+            <a href="../index.php" class="rounded-2xl bg-slate-50 px-4 py-3 text-slate-700 transition duration-150 hover:bg-orange-50 hover:text-orange-600">About</a>
+            <a href="../index.php" class="rounded-2xl bg-slate-50 px-4 py-3 text-slate-700 transition duration-150 hover:bg-orange-50 hover:text-orange-600">Products</a>
+            <a href="../review.php?id=<?php echo e($query['user_id']); ?>" class="rounded-2xl bg-slate-50 px-4 py-3 text-slate-700 transition duration-150 hover:bg-orange-50 hover:text-orange-600">Review</a>
+            <a href="../index.php" class="rounded-2xl bg-slate-50 px-4 py-3 text-slate-700 transition duration-150 hover:bg-orange-50 hover:text-orange-600">Location</a>
         </nav>
-
-        <div class="icons flex items-center space-x-2 sm:space-x-4 text-sm font-semibold order-3 md:order-none">
-            <a href="/order/cart.php" class="shoppingCart inline-flex items-center space-x-1 px-3 py-1.5 bg-slate-100 hover:bg-orange-50 hover:text-orange-600 rounded-xl transition duration-150 text-slate-700">
-                <span>🛒</span>
-                <span class="hidden sm:inline">Cart</span>
-                <span class="bg-white px-1.5 py-0.5 rounded-md border border-slate-200 text-xs font-bold text-slate-800 ml-1 group-hover:border-orange-200"><?= cart_quantity() ?></span>
-            </a>
-            
-            <a href="/order/history.php" class="OrderHistory inline-flex items-center space-x-1 px-3 py-1.5 bg-slate-100 hover:bg-slate-200 rounded-xl transition duration-150 text-slate-700">
-                <span>🧾</span>
-                <span class="hidden sm:inline">History</span>
-            </a>
-            
-            <a href="../logout.php" class="Logout inline-flex items-center space-x-1 px-3 py-1.5 bg-red-50 hover:bg-red-100 text-red-600 rounded-xl transition duration-150" title="Logout">
-                <span>🚪</span>
-                <span class="hidden sm:inline">Logout</span>
-            </a>
-        </div>
     </header>
