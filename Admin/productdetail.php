@@ -169,51 +169,62 @@ $categories = [
 ];
 ?>
 
-<div class="center-form-wrapper">
-<form action="productdetail.php?id=<?= e($id) ?>" method="POST" enctype="multipart/form-data">
-    <input type="hidden" name="product_id" value="<?= e($fetch['product_id']) ?>">
-    <table class="product-detail-table">
-        <tr>
-            <td class="image-cell" rowspan="6">
-                <img src="../products/<?= e($fetch['image']) ?>" alt="Product Image">
-                <br><br>
-                <div class="files" style="text-align:center;">
-                     <?= inputField('file','image','','','file') ?>
-                </div>
-            </td>
-            <td class="text-cell">
-                Name: <?= inputField('text','Product_name','', e($fetch['Product_name']),'') ?>
-            </td>
-        </tr>
-        <tr>
-            <td class="text-cell">
-                Price: <?= inputField('number','price','',e($fetch['price']),'') ?>
-            </td>
-        </tr>
-        <tr>
-            <td class="text-cell">
-                Quantity: <?= inputField('number','quantity','',e($fetch['quantity']),'') ?>
-            </td>
-        </tr>
-        <tr>
-            <td class="text-cell">
-                Category: 
-                <?= html_select('category_id','category_id',$categories,$fetch['category_id']) ?>
-            </td>
-        </tr>
-        <tr>
-            <td class="text-cell">
-                Detail: <br>
-                <?= html_textarea('detail','','3','30','',e($fetch['detail'])) ?>
-            </td>
-        </tr>
-    </table>
+<div class="max-w-4xl mx-auto py-12 px-4">
+    <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+        <div class="bg-gray-50 px-8 py-6 border-b border-gray-100">
+            <h2 class="text-2xl font-bold text-gray-800">Edit Product</h2>
+        </div>
 
-    <div style="text-align: center; margin-top: 15px;">
-        <?= html_submit('submit','submit','submitting','Save Changes') ?>
-        <a href="productlist.php">Back to Product page</a>
+        <form action="productdetail.php?id=<?= e($id) ?>" method="POST" enctype="multipart/form-data" class="p-8">
+            <input type="hidden" name="product_id" value="<?= e($fetch['product_id']) ?>">
+            
+            <div class="grid md:grid-cols-2 gap-10">
+                <div class="space-y-4">
+                    <label class="block text-xs font-bold text-gray-500 uppercase">Current Image</label>
+                    <img src="../products/<?= e($fetch['image']) ?>" alt="Product" 
+                         class="w-full h-64 object-cover rounded-xl shadow-md border-4 border-white">
+                    
+                    <div>
+                        <label class="block text-xs font-bold text-gray-500 uppercase mb-2">Change Image</label>
+                        <?= inputField('file','image','','','w-full p-2 text-sm border border-gray-200 rounded-lg') ?>
+                    </div>
+                </div>
+
+                <div class="space-y-5">
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700">Product Name</label>
+                        <?= inputField('text','Product_name','', e($fetch['Product_name']), 'mt-1 w-full p-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none') ?>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700">Price</label>
+                            <?= inputField('number','price','',e($fetch['price']), 'mt-1 w-full p-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none') ?>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700">Quantity</label>
+                            <?= inputField('number','quantity','',e($fetch['quantity']), 'mt-1 w-full p-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none') ?>
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700">Category</label>
+                        <?= html_select('category_id','category_id',$categories,$fetch['category_id'], 'mt-1 w-full p-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none') ?>
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700">Detail</label>
+                        <?= html_textarea('detail','','3','30','mt-1 w-full p-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none', e($fetch['detail'])) ?>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mt-10 pt-6 border-t border-gray-100 flex items-center justify-end gap-6">
+                <a href="productlist.php" class="text-sm font-semibold text-gray-500 hover:text-gray-900 transition-colors">Back to List</a>
+                <?= html_submit('submit','submit','px-8 py-3 bg-gray-900 text-white font-bold rounded-lg hover:bg-indigo-600 transition-all','Save Changes') ?>
+            </div>
+        </form>
     </div>
-</form>
 </div>
 
 <?php require __DIR__ . '/headandFoot/foot.php'; ?>

@@ -47,166 +47,73 @@ if ($order_id <= 0) {
 }
 ?>
 
-<!DOCTYPE html>
-<html lang="en">
+<div class="max-w-4xl mx-auto py-12 px-4">
+    <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+        <div class="bg-gray-50 px-8 py-6 border-b border-gray-100">
+            <h2 class="text-2xl font-bold text-gray-800">Order Details</h2>
+        </div>
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Order Details</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f5f5f5;
-            margin: 0;
-            padding: 20px;
-        }
-
-        .container {
-            max-width: 800px;
-            margin: 0 auto;
-            background-color: #fff;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-        }
-
-        h2 {
-            text-align: center;
-            color: #333;
-        }
-
-        .error {
-            color: red;
-            text-align: center;
-            margin-bottom: 20px;
-        }
-
-        .order-info,
-        .user-info {
-            margin-bottom: 20px;
-        }
-
-        .order-info h3,
-        .user-info h3 {
-            color: black;
-            margin-bottom: 10px;
-        }
-
-        .order-info p,
-        .user-info p {
-            margin: 5px 0;
-            color: #333;
-        }
-
-        .items-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
-        }
-
-        .items-table th,
-        .items-table td {
-            padding: 10px;
-            text-align: left;
-            border-bottom: 1px solid #ddd;
-        }
-
-        .items-table th {
-            background-color: black;
-            color: white;
-            text-transform: uppercase;
-        }
-
-        .items-table tbody tr:nth-child(even) {
-            background-color: #f9f9f9;
-        }
-
-        .items-table tbody tr:hover {
-            background-color: #f1f1f1;
-        }
-
-        .back-link {
-            display: block;
-            text-align: center;
-            margin-top: 20px;
-            color: #333;
-            text-decoration: none;
-        }
-
-        .back-link:hover {
-            text-decoration: underline;
-        }
-    </style>
-</head>
-
-<body>
-    <div class="container">
-        <h2>Order Details</h2>
-
-        <?php if (!empty($errors)): ?>
-            <div class="error">
-                <?php foreach ($errors as $error): ?>
-                    <p><?php echo htmlspecialchars($error); ?></p>
-                <?php endforeach; ?>
-            </div>
-        <?php else: ?>
-            <!-- Order Information -->
-            <div class="order-info">
-                <h3>Order Information</h3>
-                <p><strong>Order ID:</strong> <?php echo e($order['order_id']); ?></p>
-                <p><strong>Date:</strong> <?php echo e($order['date']); ?></p>
-                <p><strong>Item Count:</strong> <?php echo e($order['count']); ?></p>
-                <p><strong>Total:</strong>RM<?php echo number_format($order['total'], 2); ?></p>
-            </div>
-
-            <!-- User Information -->
-            <div class="user-info">
-                <h3>User Information</h3>
-                <p><strong>User ID:</strong> <?php echo e($order['user_id']); ?></p>
-                <p><strong>Name:</strong> <?php echo e($order['name'] ?? 'N/A'); ?></p>
-                <p><strong>Username:</strong> <?php echo e($order['username'] ?? 'N/A'); ?></p>
-                <p><strong>Email:</strong> <?php echo e($order['email'] ?? 'N/A'); ?></p>
-                <p><strong>Phone Number:</strong> <?php echo e($order['phone_number'] ?? 'N/A'); ?></p>
-            </div>
-
-            <!-- Order Items -->
-            <h3>Order Items</h3>
-            <?php if (empty($items)): ?>
-                <p>No items found for this order.</p>
+        <div class="p-8">
+            <?php if (!empty($errors)): ?>
+                <div class="bg-red-50 border border-red-200 text-red-600 p-4 rounded-lg mb-6">
+                    <?php foreach ($errors as $error): ?>
+                        <p class="text-sm font-medium"><?= htmlspecialchars($error) ?></p>
+                    <?php endforeach; ?>
+                </div>
             <?php else: ?>
-                <table class="items-table">
-                    <thead>
-                        <tr>
-                            <th>Item ID</th>
-                            <th>Product Name</th>
-                            <th>Category</th>
-                            <th>Unit Price</th>
-                            <th>Quantity</th>
-                            <th>Subtotal</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <?php foreach ($items as $item): ?>
+                <div class="grid md:grid-cols-2 gap-8 mb-10">
+                    <div class="bg-gray-50 p-6 rounded-xl border border-gray-100">
+                        <h3 class="text-lg font-bold text-gray-800 mb-4">Order Information</h3>
+                        <div class="space-y-2 text-sm text-gray-600">
+                            <p><span class="font-bold text-gray-800">Order ID:</span> #<?= e($order['order_id']) ?></p>
+                            <p><span class="font-bold text-gray-800">Date:</span> <?= e($order['date']) ?></p>
+                            <p><span class="font-bold text-gray-800">Item Count:</span> <?= e($order['count']) ?></p>
+                            <p><span class="font-bold text-gray-800">Total:</span> RM<?= number_format($order['total'], 2) ?></p>
+                        </div>
+                    </div>
+
+                    <div class="bg-gray-50 p-6 rounded-xl border border-gray-100">
+                        <h3 class="text-lg font-bold text-gray-800 mb-4">User Information</h3>
+                        <div class="space-y-2 text-sm text-gray-600">
+                            <p><span class="font-bold text-gray-800">Name:</span> <?= e($order['name'] ?? 'N/A') ?></p>
+                            <p><span class="font-bold text-gray-800">Email:</span> <?= e($order['email'] ?? 'N/A') ?></p>
+                            <p><span class="font-bold text-gray-800">Phone:</span> <?= e($order['phone_number'] ?? 'N/A') ?></p>
+                        </div>
+                    </div>
+                </div>
+
+                <h3 class="text-lg font-bold text-gray-800 mb-4">Order Items</h3>
+                <div class="border border-gray-200 rounded-xl overflow-hidden">
+                    <table class="w-full text-left">
+                        <thead class="bg-gray-50 text-gray-500 uppercase text-xs font-bold">
                             <tr>
-                                <td><?php echo htmlspecialchars($item['order_item_id']); ?></td>
-                                <td><?php echo htmlspecialchars($item['product_name'] ?? 'N/A'); ?></td>
-                                <td><?php echo htmlspecialchars($item['category'] ?? 'N/A'); ?></td>
-                                <td>RM<?php echo number_format($item['item_price'], 2); ?></td>
-                                <td><?php echo htmlspecialchars($item['unit']); ?></td>
-                                <td>RM<?php echo number_format($item['subtotal'], 2); ?></td>
+                                <th class="px-6 py-4">Product</th>
+                                <th class="px-6 py-4">Category</th>
+                                <th class="px-6 py-4">Price</th>
+                                <th class="px-6 py-4">Qty</th>
+                                <th class="px-6 py-4">Subtotal</th>
                             </tr>
-                        <?php endforeach; ?>
-                    </tbody>
-                </table>
+                        </thead>
+                        <tbody class="divide-y divide-gray-100 text-sm">
+                            <?php foreach ($items as $item): ?>
+                            <tr class="hover:bg-gray-50 transition-colors">
+                                <td class="px-6 py-4 font-semibold text-gray-800"><?= htmlspecialchars($item['product_name'] ?? 'N/A') ?></td>
+                                <td class="px-6 py-4 text-gray-600"><?= htmlspecialchars($item['category'] ?? 'N/A') ?></td>
+                                <td class="px-6 py-4 text-gray-600">RM<?= number_format($item['item_price'], 2) ?></td>
+                                <td class="px-6 py-4 text-gray-600"><?= htmlspecialchars($item['unit']) ?></td>
+                                <td class="px-6 py-4 font-bold text-gray-900">RM<?= number_format($item['subtotal'], 2) ?></td>
+                            </tr>
+                            <?php endforeach; ?>
+                        </tbody>
+                    </table>
+                </div>
             <?php endif; ?>
-        <?php endif; ?>
 
-        <a href="orderlist.php" class="back-link">Back to Homepage</a>
+            <div class="mt-8 text-center">
+                <a href="orderlist.php" class="text-indigo-600 hover:text-indigo-800 font-semibold transition-colors">← Back to Orders</a>
+            </div>
+        </div>
     </div>
-</body>
+</div>
 
-</html>
-
-
-<?php include './headandfoot/foot.php'; ?>
+<?php require './headandfoot/foot.php'; ?>

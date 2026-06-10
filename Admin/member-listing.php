@@ -1,195 +1,109 @@
-<?php require __DIR__ . '/headandFoot/head.php'; ?>
+<?php 
+require __DIR__ . '/headandFoot/head.php'; 
 
-<style>
-    .table-container {
-        width: 95%;
-        margin: 20px auto;
-        padding: 20px;
-        background: #fff;
-        border-radius: 8px;
-        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-    }
-
-    .styled-table {
-        width: 100%;
-        border-collapse: collapse;
-    }
-
-    .styled-table th, .styled-table td {
-        padding: 12px;
-        text-align: left;
-        border-bottom: 1px solid #ddd;
-    }
-
-    .styled-table thead {
-        background: #f4f4f4;
-    }
-
-    .styled-table tbody tr:hover {
-        background: #f9f9f9;
-    }
-
-    .edit-btn {
-        padding: 5px 10px;
-        border: none;
-        cursor: pointer;
-        margin: 2px;
-        background: black;
-        color: white;
-    }
-
-    .edit-btn:hover {
-        background: #45a049;
-    }
-
-    .search-wrapper {
-        width: 300px;
-        border: 1px solid #ccc;
-        border-radius: 30px;
-        height: 50px;
-        display: flex;
-        align-items: center;
-        margin: 20px auto;
-        background-color: #fff;
-    }
-
-    .search-wrapper input {
-        height: 40px;
-        padding: 0 1rem;
-        border: none;
-        outline: none;
-        font-size: 0.8rem;
-        border-radius: 40px;
-        background-color: #fff;
-        flex: 1;
-    }
-
-    .submit {
-        color: #3498db;
-        cursor: pointer;
-        transition: background-color 0.3s ease, transform 0.2s ease;
-        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-        border: none;
-        background-color: transparent;
-    }
-
-    .pagination {
-        text-align: center;
-        margin: 20px 0;
-    }
-
-    .pagination a {
-        color: white;
-        background: black;
-        padding: 8px 16px;
-        text-decoration: none;
-        border: 1px solid #ddd;
-        margin: 0 2px;
-        border-radius: 4px;
-    }
-
-    .pagination a.active {
-        background-color:black;
-        color: white;
-        border: 1px solid white;
-    }
-
-    .pagination a:hover {
-        background-color: #ddd;
-    }
-</style>
-
-<div class="search-wrapper">
-    <form action="member-listing.php" method="get" style="display: flex; width: 100%;">
-        <input type="text" name="search" placeholder="Search" value="<?= e($_GET['search'] ?? '') ?>">
-        <button type="submit" class="submit">🔍</button>
-    </form>
-</div>
-
-<div class="table-container">
-    <table class="styled-table">
-        <thead>
-            <tr>
-                <th>Num</th>
-                <th>ID</th>
-                <th>Name</th>
-                <th>Username</th>
-                <th>Email</th>
-                <th>View</th>
-            </tr>
-        </thead>
-        <tbody>
-<?php
+// --- Logic Section ---
 try {
-    $searchSubmitted = isset($_GET['search']);
-    $search = $searchSubmitted ? trim($_GET['search']) : '';
+    $search = isset($_GET['search']) ? trim($_GET['search']) : '';
     $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
     $perPage = 9;
     $offset = ($page - 1) * $perPage;
 
-    $users = [];
-    $totalUsers = 0;
+    // Build the query dynamically
+    $whereClause = "(status IS NULL OR status != 'admin')";
+    $params = [];
 
-    if ($searchSubmitted && $search !== '') {
-        $countStmt = $_db->prepare("SELECT COUNT(*) FROM user WHERE (name LIKE :search OR username LIKE :search OR email LIKE :search) AND (status IS NULL OR status != 'admin')");
-        $countStmt->execute(['search' => "%$search%"]);
-        $totalUsers = $countStmt->fetchColumn();
-
-        $stmt = $_db->prepare("SELECT * FROM user WHERE (name LIKE :search OR username LIKE :search OR email LIKE :search) AND (status IS NULL OR status != 'admin') LIMIT :offset, :perPage");
-        $stmt->bindValue(':search', "%$search%", PDO::PARAM_STR);
-        $stmt->bindValue(':offset', (int)$offset, PDO::PARAM_INT);
-        $stmt->bindValue(':perPage', (int)$perPage, PDO::PARAM_INT);
-        $stmt->execute();
-        $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
-    } elseif (!$searchSubmitted) {
-        $countStmt = $_db->query("SELECT COUNT(*) FROM user WHERE (status IS NULL OR status != 'admin')");
-        $totalUsers = $countStmt->fetchColumn();
-
-        $stmt = $_db->prepare("SELECT * FROM user WHERE (status IS NULL OR status != 'admin') LIMIT :offset, :perPage");
-        $stmt->bindValue(':offset', (int)$offset, PDO::PARAM_INT);
-        $stmt->bindValue(':perPage', (int)$perPage, PDO::PARAM_INT);
-        $stmt->execute();
-        $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    if ($search !== '') {
+        $whereClause .= " AND (name LIKE :search OR username LIKE :search OR email LIKE :search)";
+        $params['search'] = "%$search%";
     }
 
-    if (!empty($users)) {
-        $num = $offset + 1;
-        foreach ($users as $user) {
-?>
-            <tr>
-                <td><?= $num++ ?></td>
-                <td>M<?= e($user['user_id']) ?></td>
-                <td><?= e($user['name']) ?></td>
-                <td><?= e($user['username']) ?></td>
-                <td><?= e($user['email']) ?></td>
-                <td>
-                    <a href="memberDetail.php?id=<?= e($user['user_id']) ?>" class="edit-btn">View</a>
-                </td>
-            </tr>
-<?php
-        }
-    } elseif ($searchSubmitted) {
-        echo '<tr style="text-align:center;"><td colspan="5">No users found.</td></tr>';
-    }
+    // Get Total Count
+    $countStmt = $_db->prepare("SELECT COUNT(*) FROM user WHERE $whereClause");
+    $countStmt->execute($params);
+    $totalUsers = $countStmt->fetchColumn();
+
+    // Get Data
+    $stmt = $_db->prepare("SELECT * FROM user WHERE $whereClause LIMIT $offset, $perPage");
+    $stmt->execute($params);
+    $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
 } catch (PDOException $e) {
-    echo '<tr><td colspan="5" style="color:red;">Database error: ' . e($e->getMessage()) . '</td></tr>';
+    $error = $e->getMessage();
 }
 ?>
-        </tbody>
-    </table>
 
-    <?php if ($totalUsers > $perPage): ?>
-        <div class="pagination">
-            <?php
-                $totalPages = ceil($totalUsers / $perPage);
-                $searchQuery = $searchSubmitted ? '&search=' . urlencode($search) : '';
-
-                for ($i = 1; $i <= $totalPages; $i++):
-            ?>
-                <a href="?page=<?= $i . $searchQuery ?>" class="<?= $i == $page ? 'active' : '' ?>"><?= $i ?></a>
-            <?php endfor; ?>
+<div class="max-w-6xl mx-auto py-2 px-4">
+    <div class="flex flex-col md:flex-row md:items-center justify-between mb-3 gap-2">
+        <div>
+            <h1 class="text-2xl font-bold text-gray-800">Member Management</h1>
+            <p class="text-gray-500 text-sm">Manage and view your platform members.</p>
         </div>
-    <?php endif; ?>
+        
+        <form action="member-listing.php" method="get" class="relative w-full md:w-72">
+            <input type="text" name="search" placeholder="Search by name, email..." 
+                   value="<?= e($search) ?>" 
+                   class="w-full pl-4 pr-10 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-all">
+            <button type="submit" class="absolute right-3 top-2.5 text-gray-400 hover:text-indigo-600">
+                🔍
+            </button>
+        </form>
+    </div>
+
+    <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+        <div class="overflow-x-auto">
+            <table class="w-full text-left">
+                <thead class="bg-gray-50 border-b border-gray-200">
+                    <tr>
+                        <th class="px-6 py-4 text-xs font-bold text-gray-500 uppercase">Num</th>
+                        <th class="px-6 py-4 text-xs font-bold text-gray-500 uppercase">ID</th>
+                        <th class="px-6 py-4 text-xs font-bold text-gray-500 uppercase">Name</th>
+                        <th class="px-6 py-4 text-xs font-bold text-gray-500 uppercase">Username</th>
+                        <th class="px-6 py-4 text-xs font-bold text-gray-500 uppercase">Email</th>
+                        <th class="px-6 py-4 text-xs font-bold text-gray-500 uppercase text-center">Action</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-100">
+                    <?php if (isset($error)): ?>
+                        <tr><td colspan="6" class="px-6 py-10 text-center text-red-500"><?= e($error) ?></td></tr>
+                    <?php elseif (!empty($users)): 
+                        $num = $offset + 1;
+                        foreach ($users as $user): ?>
+                            <tr class="hover:bg-indigo-50/50 transition-colors">
+                                <td class="px-6 py-4 text-gray-500 font-medium"><?= $num++ ?></td>
+                                <td class="px-6 py-4 text-gray-900 font-mono">M<?= e($user['user_id']) ?></td>
+                                <td class="px-6 py-4 font-semibold text-gray-800"><?= e($user['name']) ?></td>
+                                <td class="px-6 py-4 text-gray-600"><?= e($user['username']) ?></td>
+                                <td class="px-6 py-4 text-gray-600"><?= e($user['email']) ?></td>
+                                <td class="px-6 py-4 text-center">
+                                    <a href="memberDetail.php?id=<?= e($user['user_id']) ?>" 
+                                       class="inline-flex items-center px-4 py-2 bg-gray-900 text-white text-xs font-bold rounded-lg hover:bg-indigo-600 transition-all shadow-sm">
+                                        View
+                                    </a>
+                                </td>
+                            </tr>
+                        <?php endforeach; 
+                    else: ?>
+                        <tr><td colspan="6" class="px-6 py-12 text-center text-gray-500 italic">No members found.</td></tr>
+                    <?php endif; ?>
+                </tbody>
+            </table>
+        </div>
+
+        <?php if ($totalUsers > $perPage): ?>
+            <div class="px-6 py-4 border-t border-gray-200 bg-gray-50 flex justify-center items-center gap-1">
+                <?php
+                    $totalPages = ceil($totalUsers / $perPage);
+                    $searchQuery = $search !== '' ? '&search=' . urlencode($search) : '';
+                    for ($i = 1; $i <= $totalPages; $i++):
+                ?>
+                    <a href="?page=<?= $i . $searchQuery ?>" 
+                       class="px-4 py-2 text-sm font-medium rounded-lg transition-all <?= $i == $page ? 'bg-indigo-600 text-white shadow-md' : 'bg-white text-gray-600 hover:bg-gray-100 border border-gray-200' ?>">
+                        <?= $i ?>
+                    </a>
+                <?php endfor; ?>
+            </div>
+        <?php endif; ?>
+    </div>
 </div>
 
 <?php require __DIR__ . '/headandFoot/foot.php'; ?>

@@ -38,131 +38,60 @@ $totalPages = ceil($totalReviews / $limit);
 $num = $offset;
 ?>
 
-<style>
-    table {
-        border-collapse: collapse;
-        width: 80%;
-        margin: 30px auto;
-        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        font-family: Arial, sans-serif;
-    }
+<div class="max-w-6xl mx-auto py-4 px-4">
+    <div class="mb-4">
+        <h1 class="text-2xl font-bold text-gray-800">Review Management</h1>
+        <p class="text-gray-500 text-sm">Monitor and moderate user feedback.</p>
+    </div>
 
-    thead {
-        background-color: #f8f8f8;
-    }
+    <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+        <div class="overflow-x-auto">
+            <table class="w-full text-left border-collapse">
+                <thead class="bg-gray-50 border-b border-gray-100">
+                    <tr>
+                        <th class="px-6 py-4 text-xs font-bold text-gray-500 uppercase tracking-wider">#</th>
+                        <th class="px-6 py-4 text-xs font-bold text-gray-500 uppercase tracking-wider">Name</th>
+                        <th class="px-6 py-4 text-xs font-bold text-gray-500 uppercase tracking-wider">Review</th>
+                        <th class="px-6 py-4 text-xs font-bold text-gray-500 uppercase tracking-wider">Rating</th>
+                        <th class="px-6 py-4 text-xs font-bold text-gray-500 uppercase tracking-wider text-center">Actions</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-100">
+                    <?php if (!empty($reviews)): foreach ($reviews as $review): ?>
+                    <tr class="hover:bg-gray-50 transition-colors">
+                        <td class="px-6 py-4 text-sm text-gray-500 font-mono"><?= ++$num ?></td>
+                        <td class="px-6 py-4 text-sm font-semibold text-gray-800"><?= e($review['name']) ?></td>
+                        <td class="px-6 py-4 text-sm text-gray-600 max-w-xs truncate"><?= e($review['textarea']) ?></td>
+                        <td class="px-6 py-4 text-sm text-yellow-400">
+                            <?= str_repeat("★", (int)$review['number_of_star']) ?>
+                            <span class="text-gray-300"><?= str_repeat("★", 5 - (int)$review['number_of_star']) ?></span>
+                        </td>
+                        <td class="px-6 py-4 text-center space-x-3">
+                            <a href="reviewDetail.php?id=<?= e($review['review_id']) ?>" class="text-indigo-600 font-bold text-xs uppercase hover:underline">View</a>
+                            <form action="reviewdelete.php" method="POST" class="inline" onsubmit="return confirm('Delete this review?');">
+                                <input type="hidden" name="review_id" value="<?= e($review['review_id']) ?>">
+                                <button type="submit" class="text-red-500 font-bold text-xs uppercase hover:underline">Delete</button>
+                            </form>
+                        </td>
+                    </tr>
+                    <?php endforeach; else: ?>
+                    <tr><td colspan="5" class="px-6 py-10 text-center text-gray-500 italic">No reviews found.</td></tr>
+                    <?php endif; ?>
+                </tbody>
+            </table>
+        </div>
 
-    th,
-    td {
-        padding: 15px;
-        border: 1px solid #ddd;
-    }
-
-    tr:hover {
-        background-color: #f1f1f1;
-    }
-
-    th {
-        font-size: 18px;
-    }
-
-    td {
-        font-size: 16px;
-    }
-
-    .stars {
-        font-size: 20px;
-        color: #FFD700;
-    }
-
-    .delete-btn {
-        background-color: red;
-        color: white;
-        border: none;
-        padding: 5px 10px;
-        border-radius: 5px;
-        cursor: pointer;
-    }
-
-    /* Pagination */
-    .pagination {
-        text-align: center;
-        margin: 20px 0;
-    }
-
-    .pagination a {
-        padding: 8px 12px;
-        margin: 0 3px;
-        border: 1px solid #ccc;
-        text-decoration: none;
-        color: black;
-    }
-
-    .pagination a.active {
-        background: #333;
-        color: white;
-    }
-
-    .pagination a:hover {
-        background: #555;
-        color: white;
-    }
-</style>
-
-<table>
-    <thead>
-        <tr>
-            <th>Num</th>
-            <th>Name</th>
-            <th>Review</th>
-            <th>Rating</th>
-            <th>View</th>
-            <th>Delete</th>
-        </tr>
-    </thead>
-    <tbody>
-        <?php if ($reviews): ?>
-            <?php foreach ($reviews as $review): ?>
-                <tr>
-                    <td><?= ++$num ?></td>
-                    <td><?= e($review['name']) ?></td>
-                    <td><?= e($review['textarea']) ?></td>
-                    <td class="stars">
-                        <?= str_repeat("⭐", (int)$review['number_of_star']) ?>
-                    </td>
-                    <td>
-                        <a href="reviewDetail.php?id=<?= e($review['review_id']) ?>">View</a>
-                    </td>
-                    <td>
-                        <form action="reviewdelete.php" method="POST"
-                            onsubmit="return confirm('Are you sure you want to delete this review?');">
-                            <input type="hidden" name="review_id" value="<?= e($review['review_id']) ?>">
-                            <button type="submit" class="delete-btn">Delete</button>
-                        </form>
-                    </td>
-                </tr>
-            <?php endforeach; ?>
-        <?php else: ?>
-            <tr>
-                <td colspan="6" style="text-align:center;">No reviews found</td>
-            </tr>
+        <?php if (($totalPages ?? 0) > 1): ?>
+        <div class="px-6 py-4 bg-gray-50 border-t border-gray-100 flex justify-center gap-1">
+            <?php for ($i = 1; $i <= $totalPages; $i++): ?>
+                <a href="?page=<?= $i ?>" 
+                   class="px-4 py-2 text-sm font-semibold rounded-lg transition-all <?= $i == $page ? 'bg-gray-900 text-white' : 'bg-white text-gray-600 hover:bg-gray-200 border border-gray-200' ?>">
+                    <?= $i ?>
+                </a>
+            <?php endfor; ?>
+        </div>
         <?php endif; ?>
-    </tbody>
-</table>
-
-<div class="pagination">
-    <?php if ($page > 1): ?>
-        <a href="?page=<?= $page - 1 ?>">Prev</a>
-    <?php endif; ?>
-
-    <?php for ($i = 1; $i <= $totalPages; $i++): ?>
-        <a href="?page=<?= $i ?>" class="<?= $i == $page ? 'active' : '' ?>">
-            <?= $i ?>
-        </a>
-    <?php endfor; ?>
-
-    <?php if ($page < $totalPages): ?>
-        <a href="?page=<?= $page + 1 ?>">Next</a>
-    <?php endif; ?>
+    </div>
 </div>
 
 <?php require __DIR__ . '/headandFoot/foot.php'; ?>

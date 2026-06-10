@@ -111,117 +111,51 @@ if (is_post()) {
     </div>
 <?php endif; ?>
 
-<style>
-body {
-    font-family: Arial, sans-serif;
-    margin: 0;
-    padding: 20px;
-    color: black;
-}
-.header-container {
-    display: flex;
-    justify-content: space-between;
-    padding: 10px;
-    background: #1e1e1e;
-    border-radius: 5px;
-}
-.button-link {
-    color: white;
-    text-decoration: none;
-    font-size: 18px;
-    padding: 10px;
-    background: #333;
-    border-radius: 5px;
-}
-.container {
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0px 0px 10px rgba(255, 255, 255, 0.1);
-    max-width: 1300px;
-    margin: auto;
-}
-form div {
-    margin-bottom: 10px;
-}
-.form_action--button input {
-    width: 48%;
-    cursor: pointer;
-    background: #007BFF;
-    border: none;
-    color: white;
-    font-size: 16px;
-    padding: 15px;
-    border-radius: 10px;
-    transition: 0.3s;
-}
-.form_action--button input:hover {
-    background: #0056b3;
-}
-.button-link {
-    width: 48%;
-    cursor: pointer;
-    background: #007BFF;
-    border: none;
-    color: white;
-    font-size: 16px;
-    padding: 15px;
-    border-radius: 10px;
-    text-align: center;
-    transition: 0.3s;
-}
-.button-link:hover {
-    background: #0056b3;
-}
-.input {
-    width: 100%;
-    padding: 8px;
-    margin-top: 5px;
-    border-radius: 5px;
-    border: 1px solid #555;
-    color: black;
-}
-.form_action--button {
-    display: flex;
-    justify-content: space-between;
-}
-.error {
-    color: red;
-    margin-bottom: 10px;
-}
-</style>
+<div class="max-w-3xl mx-auto my-4 p-6 bg-white rounded-2xl shadow-sm border border-gray-100">
+    <h2 class="text-2xl font-bold text-gray-800 mb-4">Create New Product</h2>
+    
+    <form action="createproduct.php" method="POST" enctype="multipart/form-data" class="space-y-5">
+        <?php if (!empty($errors)): ?>
+            <div class="bg-red-50 text-red-600 p-4 rounded-lg border border-red-200 text-sm">
+                <?= displayError($errors) ?>
+            </div>
+        <?php endif; ?>
 
-<div class="container">
-    <form action="createproduct.php" method="POST" enctype="multipart/form-data">
-        <?= displayError($errors) ?>
-        <div>
-            <label for="product">Product Name</label>
-            <?= inputField('text', 'product', 'Enter product name', $product, 'input') ?>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+            <div class="md:col-span-2">
+                <label class="block text-sm font-semibold text-gray-700">Product Name</label>
+                <?= inputField('text', 'product', 'Enter product name', $product, 'mt-1 w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none') ?>
+            </div>
+
+            <div>
+                <label class="block text-sm font-semibold text-gray-700">Quantity</label>
+                <?= inputField('number', 'qty', 'Enter quantity', $quantity, 'mt-1 w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none') ?>
+            </div>
+
+            <div>
+                <label class="block text-sm font-semibold text-gray-700">Price (RM)</label>
+                <?= inputField('number', 'perPrice', 'Enter price', $perPrice, 'mt-1 w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none') ?>
+            </div>
+
+            <div class="md:col-span-2">
+                <label class="block text-sm font-semibold text-gray-700">Detail</label>
+                <?= inputField('text', 'detail', 'Enter product details', $detail, 'mt-1 w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none') ?>
+            </div>
+
+            <div>
+                <label class="block text-sm font-semibold text-gray-700">Category ID</label>
+                <?= inputField('number', 'category', 'Must be 1-4', $category, 'mt-1 w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none') ?>
+            </div>
+
+            <div>
+                <label class="block text-sm font-semibold text-gray-700">Product Image</label>
+                <?= inputField('file', 'image-upload', '', '', 'mt-1 w-full p-2 border border-gray-300 rounded-lg file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-gray-900 file:text-white hover:file:bg-indigo-600 cursor-pointer') ?>
+            </div>
         </div>
-        <div>
-            <label for="qty">Quantity</label>
-            <?= inputField('number', 'qty', 'Enter the quantity', $quantity, 'input') ?>
-        </div>
-        <div>
-            <label for="perPrice">Price</label>
-            <?= inputField('number', 'perPrice', 'Enter the price', $perPrice, 'input') ?>
-        </div>
-        <div>
-            <label for="detail">Detail</label>
-            <?= inputField('text', 'detail', 'Enter the detail', $detail, 'input') ?>
-        </div>
-        <div>
-            <label for="category">Category</label>
-            <?= inputField('number', 'category', 'Category must between 1 to 4', $category, 'input') ?>
-        </div>
-        <div>
-            <label for="image-upload">Upload Image</label>
-            <?= inputField('file', 'image-upload', '', '', 'input') ?>
-        </div>
-        <div class="form_action--button">
-            <?= inputField('submit', 'submit', 'input', 'Submit') ?>
-            <?= inputField('reset', 'reset', 'input', 'Reset') ?>
+
+        <div class="flex gap-4 pt-4">
+            <?= inputField('submit', 'submit', '', 'Submit Product', 'flex-1 py-3 bg-gray-900 text-white font-bold rounded-lg hover:bg-indigo-600 transition-all cursor-pointer') ?>
+            <?= inputField('reset', 'reset', '', 'Reset Form', 'flex-1 py-3 bg-gray-100 text-gray-700 font-semibold rounded-lg hover:bg-gray-200 transition-all cursor-pointer') ?>
         </div>
     </form>
 </div>
-
-<?php require __DIR__ . '/headandFoot/foot.php'; ?>
