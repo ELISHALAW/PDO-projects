@@ -100,6 +100,7 @@ if(is_post()){
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Registration</title>
+      <link rel="icon" type="image/png" href="images/computer.webp">
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="bg-[url('../images/Laptop.jpg')] bg-cover bg-center bg-no-repeat min-h-screen flex items-center justify-center p-4 lg:p-8 antialiased relative">

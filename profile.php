@@ -27,7 +27,6 @@ if (is_post()) {
     $phone_number = $_POST['phone_number'];
     $address = trim($_POST['address'] ?? '');
 
-   
     if (preg_match('/[a-zA-Z]/', $phone_number)) {
         $errors[] = 'Phone number must not contain any letters.';
     }
@@ -128,49 +127,116 @@ if (is_post()) {
    <meta http-equiv="X-UA-Compatible" content="IE=edge">
    <meta name="viewport" content="width=device-width, initial-scale=1.0">
    <title>Update Profile</title>
-   <link rel="stylesheet" href="./css/profile.css">
+   <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body>
+<body class="bg-gray-50 text-gray-800 antialiased min-h-screen flex items-center justify-center p-4 md:p-8">
 
-<div class="update-profile">
-    <form action="" method="POST" enctype="multipart/form-data">
-        <!-- Hidden input to store the user_id -->
+<div class="w-full max-w-4xl bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+    <div class="bg-indigo-600 h-32 w-full relative"></div>
+
+    <form action="" method="POST" enctype="multipart/form-data" class="px-6 pb-8 sm:px-10 relative">
         <input type="hidden" name="user_id" value="<?= $user_id; ?>">
 
-        <!-- Display current user image or default -->
-        <?php echo '<img src="' . (!empty($fetch['image']) ? 'uploaded_img/' . e($fetch['image']) : 'images/default-avatar.png') . '">'; ?>
-
-        <!-- Display error messages -->
-        <?= displayError($errors) ?>
-
-        <div class="flex">
-            <div class="inputBox">
-                <span>Username:</span>
-                <?= inputField('text', 'update_name', '', $fetch['name'] ?? '', 'box') ?>
-                <span>Your Email:</span>
-                <?= inputField('email', 'update_email', '', $fetch['email'] ?? '', 'box') ?>
-                <span>Update Your Pic:</span>
-                <?= inputField('file', 'update_image', '', '', 'box') ?>
+        <div class="flex flex-col sm:flex-row items-center gap-4 -mt-16 mb-8 relative z-10">
+            <div class="relative group">
+                <img class="w-32 h-32 rounded-full object-cover border-4 border-white bg-white shadow-md" 
+                     src="<?= (!empty($fetch['image']) ? 'uploaded_img/' . e($fetch['image']) : 'images/default-avatar.png') ?>" 
+                     alt="Profile avatar">
             </div>
-            <div class="inputBox">
-                <span>Old Password:</span>
-                <?= html_password('password', 'update_pass', 'Enter previous password', '', 'box') ?>
-                <span>New Password:</span>
-                <?= html_password('password', 'new_pass', 'Enter new password', '', 'box') ?>
-                <span>Confirm Password:</span>
-                <?= html_password('password', 'confirm_pass', 'Confirm new password', '', 'box') ?>
-            </div>
-            <div class="inputBox">
-                <span>Phone Number:</span>
-                <?= inputField('text', 'phone_number', 'e.g. 123-456-7890', $fetch['phone_number'], 'box')?>
-                <span>Address:</span>
-                <?= inputField('text', 'address', '', $fetch['address'] ?? '', 'box') ?>
+            <div class="text-center sm:text-left mt-12 sm:mt-16">
+                <h1 class="text-2xl font-bold text-gray-900"><?= e($fetch['name'] ?? 'Update Profile') ?></h1>
+                <p class="text-sm text-gray-500"><?= e($fetch['email'] ?? '') ?></p>
             </div>
         </div>
 
-        <!-- Submit button -->
-        <?= html_submit('submit', 'update_profile', 'btn', 'Update Profile') ?>
-        <a href="index.php" class="delete-btn">Go Back</a>
+        <style>
+            /* Quick injection override targeting helper-generated layout if necessary */
+            .input-group span { @apply block text-sm font-medium text-gray-700 mb-1; }
+            .box { 
+                width: 100% !important;
+                padding: 0.5rem 0.75rem !important;
+                border-radius: 0.375rem !important;
+                border: 1px solid #e5e7eb !important;
+                background-color: #fff !important;
+                outline: none !important;
+                transition: border-color 0.15s ease-in-out;
+            }
+            .box:focus { border-color: #4f46e5 !important; ring: 2px #c7d2fe !important; }
+            .btn {
+                display: inline-flex !important;
+                justify-content: center !important;
+                align-items: center !important;
+                padding: 0.625rem 1.25rem !important;
+                font-weight: 500 !important;
+                font-size: 0.875rem !important;
+                color: #fff !important;
+                background-color: #4f46e5 !important;
+                border-radius: 0.375rem !important;
+                cursor: pointer !important;
+                transition: background-color 0.15s ease-in-out !important;
+            }
+            .btn:hover { background-color: #4338ca !important; }
+        </style>
+
+        <div class="mb-6">
+            <?= displayError($errors) ?>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+            
+            <div class="space-y-4 input-group">
+                <h3 class="text-sm font-semibold text-gray-400 uppercase tracking-wider mb-2">Basic Info</h3>
+                <div>
+                    <span class="block text-sm font-medium text-gray-700 mb-1">Username:</span>
+                    <?= inputField('text', 'update_name', '', $fetch['name'] ?? '', 'box') ?>
+                </div>
+                <div>
+                    <span class="block text-sm font-medium text-gray-700 mb-1">Your Email:</span>
+                    <?= inputField('email', 'update_email', '', $fetch['email'] ?? '', 'box') ?>
+                </div>
+                <div>
+                    <span class="block text-sm font-medium text-gray-700 mb-1">Update Your Pic:</span>
+                    <?= inputField('file', 'update_image', '', '', 'box block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100') ?>
+                </div>
+            </div>
+
+            <div class="space-y-4 input-group">
+                <h3 class="text-sm font-semibold text-gray-400 uppercase tracking-wider mb-2">Security</h3>
+                <div>
+                    <span class="block text-sm font-medium text-gray-700 mb-1">Old Password:</span>
+                    <?= html_password('password', 'update_pass', 'Enter previous password', '', 'box') ?>
+                </div>
+                <div>
+                    <span class="block text-sm font-medium text-gray-700 mb-1">New Password:</span>
+                    <?= html_password('password', 'new_pass', 'Enter new password', '', 'box') ?>
+                </div>
+                <div>
+                    <span class="block text-sm font-medium text-gray-700 mb-1">Confirm Password:</span>
+                    <?= html_password('password', 'confirm_pass', 'Confirm new password', '', 'box') ?>
+                </div>
+            </div>
+
+            <div class="space-y-4 input-group">
+                <h3 class="text-sm font-semibold text-gray-400 uppercase tracking-wider mb-2">Contact Details</h3>
+                <div>
+                    <span class="block text-sm font-medium text-gray-700 mb-1">Phone Number:</span>
+                    <?= inputField('text', 'phone_number', 'e.g. 123-456-7890', $fetch['phone_number'], 'box')?>
+                </div>
+                <div>
+                    <span class="block text-sm font-medium text-gray-700 mb-1">Address:</span>
+                    <?= inputField('text', 'address', '', $fetch['address'] ?? '', 'box') ?>
+                </div>
+            </div>
+        </div>
+
+        <hr class="border-gray-100 my-6">
+
+        <div class="flex flex-col sm:flex-row-reverse items-center justify-start gap-3">
+            <?= html_submit('submit', 'update_profile', 'btn w-full sm:w-auto', 'Update Profile') ?>
+            <a href="index.php" class="w-full sm:w-auto text-center px-5 py-2.5 rounded-md text-sm font-medium text-gray-700 bg-white border border-gray-300 hover:bg-gray-50 transition duration-150">
+                Go Back
+            </a>
+        </div>
     </form>
 </div>
 
