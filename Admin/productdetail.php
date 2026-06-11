@@ -23,7 +23,8 @@ if (is_post()) {
     if (empty($quantity) || $quantity <= 0) {
         $errors[] = "Quantity must be a positive number.";
     }
-    if (empty($category_id) || !in_array($category_id, [1, 2, 3])) {
+    // Updated to allow all 4 categories mapping to your array
+    if (empty($category_id) || !in_array($category_id, [1, 2, 3, 4])) {
         $errors[] = "Please select a valid category.";
     }
 
@@ -86,12 +87,12 @@ if (is_post()) {
         $stmt->bindParam(':product_id', $id);
 
         if ($stmt->execute()) {
-            echo "<p style='text-align:center; color:green;'>Product updated successfully!</p>";
+            echo "<p style='text-align:center; color:green; margin-top:20px;'>Product updated successfully!</p>";
         } else {
-            echo "<p style='text-align:center; color:red;'>Error updating product.</p>";
+            echo "<p style='text-align:center; color:red; margin-top:20px;'>Error updating product.</p>";
         }
     } else {
-        echo "<ul style='color: red; text-align:center;'>";
+        echo "<ul style='color: red; text-align:center; margin-top:20px;'>";
         foreach ($errors as $error) {
             echo "<li>$error</li>";
         }
@@ -105,62 +106,7 @@ $stmt = $_db->prepare("SELECT * FROM product WHERE product_id = :product_id");
 $stmt->bindParam(":product_id", $id, PDO::PARAM_INT);
 $stmt->execute();
 $fetch = $stmt->fetch(PDO::FETCH_ASSOC);
-?>
-<a href="../products/"></a>
-<style>
-.product-detail-table {
-    width: 80%;
-    margin: 30px auto;
-    border-collapse: collapse;
-    border: 2px solid #ddd;
-    font-family: Arial, sans-serif;
-}
-.product-detail-table td {
-    padding: 12px;
-    border: 1px solid #ccc;
-    vertical-align: top;
-}
-.image-cell {
-    width: 200px;
-    text-align: center;
-    background-color: #f9f9f9;
-    justify-content: center;
-    align-items: center;
-}
-.image-cell img {
-    width: 100%;
-    max-width: 180px;
-    height: auto;
-    border-radius: 10px;
-    transition: transform 0.3s ease;
-}
-.image-cell img:hover {
-    transform: scale(1.05);
-}
-.text-cell {
-    background-color: #fff;
-    font-size: 16px;
-    line-height: 1.6;
-}
-textarea {
-    resize: none;
-}
-.submitting {
-    padding: 10px 20px; 
-    background-color: #007BFF; 
-    color: white;
-    border: none; 
-    border-radius: 5px;
-    cursor: pointer;
-}
-.files input[type=file] {
-    text-align: center;
-    align-items: center;
-    justify-content: center;
-}
-</style>
 
-<?php
 $categories = [
     1 => 'Asus',
     2 => 'Huawei',
@@ -168,60 +114,77 @@ $categories = [
     4 => 'Dell',
 ];
 ?>
+<a href="../products/"></a>
 
-<div class="max-w-4xl mx-auto py-12 px-4">
-    <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
-        <div class="bg-gray-50 px-8 py-6 border-b border-gray-100">
-            <h2 class="text-2xl font-bold text-gray-800">Edit Product</h2>
+<div class="max-w-5xl mx-auto py-10 px-4">
+    <div class="bg-slate-800/40 backdrop-blur-md rounded-2xl shadow-xl border border-slate-700/60 overflow-hidden">
+        
+        <div class="bg-slate-800/60 px-8 py-6 border-b border-slate-700/60">
+            <h2 class="text-xl font-bold text-white tracking-wide">Edit Product Specifications</h2>
+            <p class="text-xs text-slate-400 mt-1">Modify pricing tiers, description parameters, or refresh image assets.</p>
         </div>
 
         <form action="productdetail.php?id=<?= e($id) ?>" method="POST" enctype="multipart/form-data" class="p-8">
             <input type="hidden" name="product_id" value="<?= e($fetch['product_id']) ?>">
             
-            <div class="grid md:grid-cols-2 gap-10">
-                <div class="space-y-4">
-                    <label class="block text-xs font-bold text-gray-500 uppercase">Current Image</label>
-                    <img src="../products/<?= e($fetch['image']) ?>" alt="Product" 
-                         class="w-full h-64 object-cover rounded-xl shadow-md border-4 border-white">
+            <div class="grid md:grid-cols-5 gap-10">
+                
+                <div class="space-y-4 md:col-span-2">
+                    <label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider">Current Asset Image</label>
+                    <div class="relative group">
+                        <div class="absolute -inset-0.5 bg-gradient-to-r from-blue-500 to-indigo-600 rounded-xl opacity-30 blur group-hover:opacity-50 transition duration-300"></div>
+                        <img src="../products/<?= e($fetch['image']) ?>" alt="Product" 
+                             class="relative w-full h-64 object-cover rounded-xl shadow-2xl border border-slate-600/50 bg-slate-900">
+                    </div>
                     
-                    <div>
-                        <label class="block text-xs font-bold text-gray-500 uppercase mb-2">Change Image</label>
-                        <?= inputField('file','image','','','w-full p-2 text-sm border border-gray-200 rounded-lg') ?>
+                    <div class="pt-2">
+                        <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-2">Change Image File</label>
+                        <?= inputField('file','image','','','block w-full text-xs text-slate-400 file:mr-3 file:py-2 file:px-4 file:rounded-lg file:border file:border-slate-600 file:text-xs file:font-semibold file:bg-slate-800 file:text-slate-200 hover:file:bg-slate-700 hover:file:text-white transition-all cursor-pointer') ?>
                     </div>
                 </div>
 
-                <div class="space-y-5">
+                <div class="space-y-5 md:col-span-3">
                     <div>
-                        <label class="block text-sm font-semibold text-gray-700">Product Name</label>
-                        <?= inputField('text','Product_name','', e($fetch['Product_name']), 'mt-1 w-full p-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none') ?>
+                        <label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1.5">Product Name</label>
+                        <?= inputField('text','Product_name','', e($fetch['Product_name']), 'w-full bg-slate-900/60 border border-slate-700/50 text-slate-200 placeholder-slate-500 rounded-xl p-3.5 text-sm font-medium outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 shadow-inner transition-all') ?>
                     </div>
 
                     <div class="grid grid-cols-2 gap-4">
                         <div>
-                            <label class="block text-sm font-semibold text-gray-700">Price</label>
-                            <?= inputField('number','price','',e($fetch['price']), 'mt-1 w-full p-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none') ?>
+                            <label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1.5">Price (RM)</label>
+                            <?= inputField('number','price','',e($fetch['price']), 'w-full bg-slate-900/60 border border-slate-700/50 text-slate-200 placeholder-slate-500 rounded-xl p-3.5 text-sm font-medium outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 shadow-inner transition-all') ?>
                         </div>
                         <div>
-                            <label class="block text-sm font-semibold text-gray-700">Quantity</label>
-                            <?= inputField('number','quantity','',e($fetch['quantity']), 'mt-1 w-full p-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none') ?>
+                            <label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1.5">Quantity Stock</label>
+                            <?= inputField('number','quantity','',e($fetch['quantity']), 'w-full bg-slate-900/60 border border-slate-700/50 text-slate-200 placeholder-slate-500 rounded-xl p-3.5 text-sm font-medium outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 shadow-inner transition-all') ?>
                         </div>
                     </div>
 
-                    <div>
-                        <label class="block text-sm font-semibold text-gray-700">Category</label>
-                        <?= html_select('category_id','category_id',$categories,$fetch['category_id'], 'mt-1 w-full p-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none') ?>
+                   <div>
+                        <label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1.5">Category Designation</label>
+                        <select name="category_id" id="category_id" 
+                                class="w-full bg-slate-900/90 border border-slate-700/50 text-slate-200 rounded-xl p-3.5 text-sm font-medium outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 shadow-inner transition-all cursor-pointer appearance-none">
+                            <?php foreach ($categories as $id_cat => $name_cat): ?>
+                                <option value="<?= $id_cat ?>" <?= $id_cat == $fetch['category_id'] ? 'selected' : '' ?> class="bg-slate-900 text-slate-200">
+                                    <?= e($name_cat) ?>
+                                </option>
+                            <?php endforeach; ?>
+                        </select>
                     </div>
 
                     <div>
-                        <label class="block text-sm font-semibold text-gray-700">Detail</label>
-                        <?= html_textarea('detail','','3','30','mt-1 w-full p-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none', e($fetch['detail'])) ?>
+                        <label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1.5">Details Overview</label>
+                        <textarea name="detail" 
+                                  rows="4" 
+                                  class="w-full bg-slate-900/90 border border-slate-700/50 text-slate-200 placeholder-slate-500 rounded-xl p-3.5 text-sm font-medium outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 shadow-inner transition-all resize-none" 
+                                  placeholder="Enter product details..."><?= e($fetch['detail']) ?></textarea>
                     </div>
                 </div>
             </div>
 
-            <div class="mt-10 pt-6 border-t border-gray-100 flex items-center justify-end gap-6">
-                <a href="productlist.php" class="text-sm font-semibold text-gray-500 hover:text-gray-900 transition-colors">Back to List</a>
-                <?= html_submit('submit','submit','px-8 py-3 bg-gray-900 text-white font-bold rounded-lg hover:bg-indigo-600 transition-all','Save Changes') ?>
+            <div class="mt-8 pt-6 border-t border-slate-700/60 flex items-center justify-end gap-4">
+                <a href="productlist.php" class="px-5 py-2.5 text-xs font-semibold text-slate-400 hover:text-white transition-colors">Back to List</a>
+                <?= html_submit('submit','submit','px-5 py-2.5 bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs rounded-xl transition-all shadow-md shadow-blue-600/10 cursor-pointer','Save Changes') ?>
             </div>
         </form>
     </div>

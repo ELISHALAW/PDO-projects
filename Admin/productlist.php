@@ -1,126 +1,5 @@
 <?php require __DIR__ . '/headandFoot/head.php'; ?>
 
-<style>
-    .container {
-        max-width: 1000px;
-        margin: auto;
-        padding: 20px;
-    }
-
-    h1 {
-        text-align: center;
-        margin-bottom: 20px;
-        color: #000;
-        background-color: #f0f0f0;
-        padding: 10px;
-        border-radius: 8px;
-    }
-
-    .header-container {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 15px;
-        flex-wrap: wrap;
-    }
-
-    .header-container form {
-        text-align: center;
-        margin-left: auto;
-        margin-right: auto;
-    }
-
-    .header-container input[type="search"] {
-        background-color: #222;
-        color: #fff;
-        border: 1px solid #007BFF;
-        padding: 6px 10px;
-        border-radius: 5px 0 0 5px;
-        outline: none;
-    }
-
-    .header-container button.searchButton {
-        padding: 6px 12px;
-        border: none;
-        background-color: #007BFF;
-        color: #fff;
-        border-radius: 0 5px 5px 0;
-        cursor: pointer;
-        transition: background-color 0.3s ease;
-    }
-
-    .header-container button.searchButton:hover {
-        background-color: #0056b3;
-    }
-
-    table {
-        width: 100%;
-        border-collapse: collapse;
-        margin-top: 10px;
-        color: #fff;
-    }
-
-    th {
-        background-color: #333;
-    }
-
-    img {
-        border-radius: 8px;
-        transition: transform 0.3s ease;
-    }
-
-    img:hover {
-        transform: scale(1.1);
-    }
-
-    .pagination {
-        margin-top: 20px;
-        text-align: center;
-    }
-
-    .pagination a {
-        color: white;
-        padding: 8px 12px;
-        margin: 0 3px;
-        background-color: #007BFF;
-        text-decoration: none;
-        border-radius: 5px;
-        transition: background-color 0.3s ease;
-    }
-
-    .pagination a:hover {
-        background-color: #0056b3;
-    }
-
-    .pagination .active {
-        background-color: #0056b3;
-        font-weight: bold;
-    }
-
-    @media (max-width: 768px) {
-        .header-container {
-            flex-direction: column;
-            gap: 10px;
-        }
-
-        table, th, td {
-            font-size: 14px;
-        }
-    }
-
-    table {
-        text-align: center;
-    }
-
-    .delete-btn {
-        background-color: red;
-        color: white;
-        border: none;
-        padding: 5px 10px;
-        border-radius: 5px;
-        cursor: pointer;
-    }
-</style>
 
 <?php
 // Handle search query
@@ -162,65 +41,75 @@ $stmt->execute();
 $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
 ?>
 
-<div class="max-w-6xl mx-auto">
-    <div class="flex flex-col md:flex-row md:items-center justify-between mb-3 gap-2">
+<div class="max-w-7xl mx-auto py-6 px-4">
+    <div class="flex flex-col md:flex-row md:items-center justify-between mb-6 gap-4">
         <div>
-            <h1 class="text-2xl font-bold text-gray-800">Product Management</h1>
-            <p class="text-gray-500 text-sm">Total Products: <span class="font-bold text-gray-900"><?= e($totalProducts ?? 0) ?></span></p>
+            <h1 class="text-2xl font-bold text-white tracking-wide">Product Management</h1>
+            <p class="text-slate-400 text-sm mt-0.5">
+                Total Listed Items: <span class="font-bold text-blue-400 font-mono"><?= e($totalProducts ?? 0) ?></span>
+            </p>
         </div>
 
         <form action="productlist.php" method="GET" class="flex gap-2 w-full md:w-auto">
             <input type="search" name="q" value="<?= e($_GET['q'] ?? '') ?>" placeholder="Search products..." 
-                   class="w-full md:w-64 px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none">
-            <button type="submit" class="px-5 py-2 bg-gray-900 text-white font-semibold rounded-lg hover:bg-indigo-600 transition-all">Search</button>
+                   class="w-full md:w-64 px-4 py-2.5 bg-slate-800 border border-slate-700 text-slate-200 placeholder-slate-500 rounded-xl focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 outline-none transition-all shadow-inner text-sm">
+            <button type="submit" class="px-5 py-2.5 bg-blue-600 hover:bg-blue-500 text-white font-semibold text-sm rounded-xl transition-all shadow-md shadow-blue-600/10">
+                Search
+            </button>
         </form>
     </div>
 
-    <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+    <div class="bg-slate-800/40 backdrop-blur-md rounded-xl border border-slate-700/60 shadow-xl overflow-hidden">
         <div class="overflow-x-auto">
-            <table class="w-full text-left">
-                <thead class="bg-gray-50 border-b border-gray-100">
+            <table class="w-full text-left border-collapse">
+                <thead class="bg-slate-800/60 text-slate-400 uppercase text-xs tracking-wider font-semibold border-b border-slate-700/40">
                     <tr>
-                        <th class="px-6 py-4 text-xs font-bold text-gray-500 uppercase">ID</th>
-                        <th class="px-6 py-4 text-xs font-bold text-gray-500 uppercase">Image</th>
-                        <th class="px-6 py-4 text-xs font-bold text-gray-500 uppercase">Name</th>
-                        <th class="px-6 py-4 text-xs font-bold text-gray-500 uppercase">Price</th>
-                        <th class="px-6 py-4 text-xs font-bold text-gray-500 uppercase">Stock</th>
-                        <th class="px-6 py-4 text-xs font-bold text-gray-500 uppercase">Category</th>
-                        <th class="px-6 py-4 text-xs font-bold text-gray-500 uppercase text-center">Actions</th>
+                        <th class="px-6 py-4 w-24">ID</th>
+                        <th class="px-6 py-4 w-28 text-center">Preview</th>
+                        <th class="px-6 py-4">Item Descriptor</th>
+                        <th class="px-6 py-4">Unit Price</th>
+                        <th class="px-6 py-4">Stock Level</th>
+                        <th class="px-6 py-4">Category</th>
+                        <th class="px-6 py-4 text-center">Operations</th>
                     </tr>
                 </thead>
-                <tbody class="divide-y divide-gray-100">
+                <tbody class="divide-y divide-slate-700/40 text-slate-300">
                     <?php if (count($results) > 0): foreach ($results as $result): ?>
-                    <tr class="hover:bg-gray-50 transition-colors text-sm">
-                        <td class="px-6 py-4 font-mono font-bold text-gray-800">P<?= e($result['product_id']) ?></td>
+                    <tr class="hover:bg-slate-700/20 transition-colors text-sm group">
+                        <td class="px-6 py-4 font-mono text-xs text-blue-400 font-bold">P<?= e($result['product_id']) ?></td>
                         <td class="px-6 py-4">
-                            <img src="../products/<?= e($result['image']) ?>" class="w-16 h-16 object-cover rounded-lg shadow-sm" alt="Product">
+                            <div class="flex justify-center">
+                                <img src="../products/<?= e($result['image']) ?>" class="w-12 h-12 object-cover rounded-lg bg-slate-900 border border-slate-700/60 shadow-md group-hover:scale-105 transition-transform" alt="Product">
+                            </div>
                         </td>
-                        <td class="px-6 py-4 font-semibold text-gray-800"><?= e($result['Product_name']) ?></td>
-                        <td class="px-6 py-4 text-gray-600">$<?= number_format($result['price'], 2) ?></td>
-                        <td class="px-6 py-4 text-gray-600"><?= e($result['quantity']) ?></td>
-                        <td class="px-6 py-4 text-gray-500"><?= e($result['category']) ?></td>
-                        <td class="px-6 py-4 text-center space-x-3">
-                            <a href="productdetail.php?id=<?= e($result['product_id']) ?>" class="text-indigo-600 font-bold text-xs uppercase hover:underline">View</a>
+                        <td class="px-6 py-4 font-medium text-slate-200 group-hover:text-white transition-colors"><?= e($result['Product_name']) ?></td>
+                        <td class="px-6 py-4 font-mono font-semibold text-emerald-400">RM <?= number_format($result['price'], 2) ?></td>
+                        <td class="px-6 py-4">
+                            <span class="font-mono text-xs px-2.5 py-1 rounded-md font-semibold <?= (int)$result['quantity'] > 5 ? 'bg-slate-900/60 text-slate-300 border border-slate-700/40' : 'bg-rose-500/10 text-rose-400 border border-rose-500/20' ?>">
+                                <?= e($result['quantity']) ?> left
+                            </span>
+                        </td>
+                        <td class="px-6 py-4 text-slate-400 text-xs"><span class="px-2.5 py-1 bg-slate-900/40 border border-slate-700/50 rounded-lg"><?= e($result['category']) ?></span></td>
+                        <td class="px-6 py-4 text-center space-x-2">
+                            <a href="productdetail.php?id=<?= e($result['product_id']) ?>" class="inline-flex items-center px-3 py-1.5 bg-slate-700 hover:bg-blue-600 text-white text-xs font-semibold rounded-lg transition-all shadow-sm">View</a>
                             <form action="delete.php" method="POST" class="inline" onsubmit="return confirm('Delete this product?');">
                                 <input type="hidden" name="product_id" value="<?= e($result['product_id']) ?>">
-                                <button type="submit" class="text-red-500 font-bold text-xs uppercase hover:underline">Delete</button>
+                                <button type="submit" class="inline-flex items-center px-3 py-1.5 bg-slate-900 border border-slate-700/60 hover:bg-rose-600/20 hover:border-rose-500/40 text-slate-400 hover:text-rose-400 text-xs font-semibold rounded-lg transition-all">Delete</button>
                             </form>
                         </td>
                     </tr>
                     <?php endforeach; else: ?>
-                    <tr><td colspan="7" class="px-6 py-10 text-center text-gray-500 italic">No products found.</td></tr>
+                    <tr><td colspan="7" class="px-6 py-16 text-center text-slate-500 italic bg-slate-800/10">No stock entities match database parameters.</td></tr>
                     <?php endif; ?>
                 </tbody>
             </table>
         </div>
 
         <?php if (($totalPages ?? 0) > 1): ?>
-        <div class="px-6 py-4 bg-gray-50 border-t border-gray-100 flex justify-center gap-1">
+        <div class="px-6 py-4 bg-slate-800/40 border-t border-slate-700/40 flex justify-center gap-1.5">
             <?php for ($i = 1; $i <= $totalPages; $i++): ?>
                 <a href="?page=<?= $i ?>&q=<?= e($_GET['q'] ?? '') ?>" 
-                   class="px-4 py-2 text-sm font-semibold rounded-lg transition-all <?= $i === $page ? 'bg-gray-900 text-white' : 'bg-white text-gray-600 hover:bg-gray-200 border border-gray-200' ?>">
+                   class="px-3.5 py-1.5 text-xs font-semibold rounded-lg transition-all <?= $i === $page ? 'bg-blue-600 text-white shadow-md shadow-blue-500/20' : 'bg-slate-800 text-slate-400 hover:bg-slate-700 border border-slate-700/60' ?>">
                     <?= $i ?>
                 </a>
             <?php endfor; ?>

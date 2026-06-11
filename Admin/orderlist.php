@@ -32,63 +32,63 @@ $totalOrders = $totalResult['total_orders'];
 $totalPages = ceil($totalOrders / $ordersPerPage);
 ?>
 
-<div class="max-w-6xl mx-auto py-2 px-4">
-    <div class="mb-3">
-        <h1 class="text-2xl font-bold text-gray-800">Order Management</h1>
-        <p class="text-gray-500 text-sm">Overview of all platform transactions.</p>
+<div class="max-w-7xl mx-auto py-6 px-4">
+    <div class="mb-6">
+        <h1 class="text-2xl font-bold text-white tracking-wide">Order Management</h1>
+        <p class="text-slate-400 text-sm mt-0.5">Overview of all platform sales metrics and transactions.</p>
     </div>
 
-    <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+    <div class="bg-slate-800/40 backdrop-blur-md rounded-xl border border-slate-700/60 shadow-xl overflow-hidden">
         <div class="overflow-x-auto">
             <table class="w-full text-left border-collapse">
-                <thead class="bg-gray-50 border-b border-gray-200">
+                <thead class="bg-slate-800/60 text-slate-400 uppercase text-xs tracking-wider font-semibold border-b border-slate-700/40">
                     <tr>
-                        <th class="px-6 py-4 text-xs font-bold text-gray-500 uppercase tracking-wider">Order ID</th>
-                        <th class="px-6 py-4 text-xs font-bold text-gray-500 uppercase tracking-wider">Date</th>
-                        <th class="px-6 py-4 text-xs font-bold text-gray-500 uppercase tracking-wider">Items</th>
-                        <th class="px-6 py-4 text-xs font-bold text-gray-500 uppercase tracking-wider">Total</th>
-                        <th class="px-6 py-4 text-xs font-bold text-gray-500 uppercase tracking-wider">Customer</th>
-                        <th class="px-6 py-4 text-xs font-bold text-gray-500 uppercase tracking-wider">Username</th>
-                        <th class="px-6 py-4 text-xs font-bold text-gray-500 uppercase tracking-wider text-center">Action</th>
+                        <th class="px-6 py-4 w-28">Order ID</th>
+                        <th class="px-6 py-4">Transaction Date</th>
+                        <th class="px-6 py-4 text-center w-24">Items</th>
+                        <th class="px-6 py-4">Total Price</th>
+                        <th class="px-6 py-4">Customer Name</th>
+                        <th class="px-6 py-4">Username</th>
+                        <th class="px-6 py-4 text-center">Operation</th>
                     </tr>
                 </thead>
-                <tbody class="divide-y divide-gray-100">
+                <tbody class="divide-y divide-slate-700/40 text-slate-300">
                     <?php if (!empty($datas)): ?>
                         <?php foreach ($datas as $data): ?>
-                        <tr class="hover:bg-gray-50 transition-colors text-sm">
-                            <td class="px-6 py-4 font-mono font-medium text-gray-800">#<?= e($data['order_id']) ?></td>
-                            <td class="px-6 py-4 text-gray-600"><?= e($data['date']) ?></td>
-                            <td class="px-6 py-4 text-gray-600"><?= e($data['count']) ?></td>
-                            <td class="px-6 py-4 font-semibold text-gray-900">$<?= number_format($data['total'], 2) ?></td>
-                            <td class="px-6 py-4 text-gray-700"><?= e($data['name']) ?></td>
-                            <td class="px-6 py-4 text-gray-500">@<?= e($data['username']) ?></td>
+                        <tr class="hover:bg-slate-700/20 transition-colors text-sm group">
+                            <td class="px-6 py-4 font-mono text-xs text-blue-400 font-bold">#<?= e($data['order_id']) ?></td>
+                            <td class="px-6 py-4 text-slate-300"><?= e($data['date']) ?></td>
+                            <td class="px-6 py-4 text-center font-mono text-slate-400 group-hover:text-slate-200 transition-colors"><?= e($data['count']) ?></td>
+                            <td class="px-6 py-4 font-bold text-emerald-400 font-mono">RM <?= number_format($data['total'], 2) ?></td>
+                            <td class="px-6 py-4 font-medium text-slate-200 group-hover:text-white transition-colors"><?= e($data['name']) ?></td>
+                            <td class="px-6 py-4 text-slate-400">@<?= e($data['username']) ?></td>
                             <td class="px-6 py-4 text-center">
                                 <a href="orderDetail.php?id=<?= e($data['order_id']) ?>" 
-                                   class="text-indigo-600 hover:text-indigo-900 font-semibold text-xs uppercase tracking-wide">
-                                   View
+                                   class="inline-flex items-center px-4 py-1.5 bg-slate-700 hover:bg-blue-600 text-white text-xs font-semibold rounded-lg transition-all shadow-sm">
+                                    View
                                 </a>
                             </td>
                         </tr>
                         <?php endforeach; ?>
                     <?php else: ?>
-                        <tr><td colspan="7" class="px-6 py-10 text-center text-gray-500">No orders found.</td></tr>
+                        <tr><td colspan="7" class="px-6 py-16 text-center text-slate-500 italic bg-slate-800/10">No records found within active transaction histories.</td></tr>
                     <?php endif; ?>
                 </tbody>
             </table>
         </div>
 
         <?php if ($totalPages > 1): ?>
-        <div class="px-6 py-4 border-t border-gray-100 flex items-center justify-between bg-gray-50">
-            <div class="text-sm text-gray-600">
-                Page <span class="font-bold"><?= $page ?></span> of <?= $totalPages ?>
+        <div class="px-6 py-4 border-t border-slate-700/40 flex items-center justify-between bg-slate-800/40">
+            <div class="text-xs font-medium text-slate-400">
+                Displaying Page <span class="text-white font-bold font-mono"><?= $page ?></span> of <?= $totalPages ?>
             </div>
             <div class="flex gap-2">
                 <?php if ($page > 1): ?>
-                    <a href="?page=<?= ($page - 1) ?>" class="px-4 py-2 bg-white border border-gray-300 rounded-lg text-sm hover:bg-gray-100 transition-all">Previous</a>
+                    <a href="?page=<?= ($page - 1) ?>" class="px-3.5 py-1.5 bg-slate-800 text-slate-300 border border-slate-700/60 rounded-lg text-xs font-semibold hover:bg-slate-700 transition-all">Previous</a>
                 <?php endif; ?>
                 
                 <?php if ($page < $totalPages): ?>
-                    <a href="?page=<?= ($page + 1) ?>" class="px-4 py-2 bg-gray-900 text-white rounded-lg text-sm hover:bg-gray-800 transition-all">Next</a>
+                    <a href="?page=<?= ($page + 1) ?>" class="px-3.5 py-1.5 bg-blue-600 text-white rounded-lg text-xs font-semibold hover:bg-blue-500 transition-all shadow-md shadow-blue-600/10">Next Page</a>
                 <?php endif; ?>
             </div>
         </div>

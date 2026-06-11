@@ -111,51 +111,54 @@ if (is_post()) {
     </div>
 <?php endif; ?>
 
-<div class="max-w-3xl mx-auto my-4 p-6 bg-white rounded-2xl shadow-sm border border-gray-100">
-    <h2 class="text-2xl font-bold text-gray-800 mb-4">Create New Product</h2>
+<div class="max-w-4xl mx-auto my-6 p-8 bg-slate-800/40 backdrop-blur-md rounded-2xl shadow-xl border border-slate-700/60">
+    <div class="mb-6 border-b border-slate-700/60 pb-4">
+        <h2 class="text-2xl font-bold text-white tracking-wide">Create New Product</h2>
+        <p class="text-slate-400 text-sm mt-1">Fill in the fields below to add a new inventory item to the platform.</p>
+    </div>
     
-    <form action="createproduct.php" method="POST" enctype="multipart/form-data" class="space-y-5">
+    <form action="createproduct.php" method="POST" enctype="multipart/form-data" class="space-y-6">
         <?php if (!empty($errors)): ?>
-            <div class="bg-red-50 text-red-600 p-4 rounded-lg border border-red-200 text-sm">
+            <div class="bg-red-500/10 text-red-400 p-4 rounded-xl border border-red-500/20 text-sm font-medium">
                 <?= displayError($errors) ?>
             </div>
         <?php endif; ?>
 
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div class="md:col-span-2">
-                <label class="block text-sm font-semibold text-gray-700">Product Name</label>
-                <?= inputField('text', 'product', 'Enter product name', $product, 'mt-1 w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none') ?>
+                <label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">Product Name</label>
+                <?= inputField('text', 'product', 'Enter product name', $product, 'w-full bg-slate-900/60 border border-slate-700/50 text-slate-200 placeholder-slate-500 rounded-xl p-3.5 text-sm font-medium outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 shadow-inner transition-all') ?>
             </div>
 
             <div>
-                <label class="block text-sm font-semibold text-gray-700">Quantity</label>
-                <?= inputField('number', 'qty', 'Enter quantity', $quantity, 'mt-1 w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none') ?>
+                <label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">Quantity</label>
+                <?= inputField('number', 'qty', 'Enter quantity', $quantity, 'w-full bg-slate-900/60 border border-slate-700/50 text-slate-200 placeholder-slate-500 rounded-xl p-3.5 text-sm font-medium outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 shadow-inner transition-all') ?>
             </div>
 
             <div>
-                <label class="block text-sm font-semibold text-gray-700">Price (RM)</label>
-                <?= inputField('number', 'perPrice', 'Enter price', $perPrice, 'mt-1 w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none') ?>
+                <label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">Price (RM)</label>
+                <?= inputField('number', 'perPrice', 'Enter price', $perPrice, 'w-full bg-slate-900/60 border border-slate-700/50 text-slate-200 placeholder-slate-500 rounded-xl p-3.5 text-sm font-medium outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 shadow-inner transition-all') ?>
             </div>
 
             <div class="md:col-span-2">
-                <label class="block text-sm font-semibold text-gray-700">Detail</label>
-                <?= inputField('text', 'detail', 'Enter product details', $detail, 'mt-1 w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none') ?>
+                <label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">Detail Descriptions</label>
+                <?= inputField('text', 'detail', 'Enter product details', $detail, 'w-full bg-slate-900/60 border border-slate-700/50 text-slate-200 placeholder-slate-500 rounded-xl p-3.5 text-sm font-medium outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 shadow-inner transition-all') ?>
             </div>
 
             <div>
-                <label class="block text-sm font-semibold text-gray-700">Category ID</label>
-                <?= inputField('number', 'category', 'Must be 1-4', $category, 'mt-1 w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none') ?>
+                <label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">Category ID <span class="text-slate-500 font-normal">(1 to 4)</span></label>
+                <?= inputField('number', 'category', 'Must be 1-4', $category, 'w-full bg-slate-900/60 border border-slate-700/50 text-slate-200 placeholder-slate-500 rounded-xl p-3.5 text-sm font-medium outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 shadow-inner transition-all') ?>
             </div>
 
             <div>
-                <label class="block text-sm font-semibold text-gray-700">Product Image</label>
-                <?= inputField('file', 'image-upload', '', '', 'mt-1 w-full p-2 border border-gray-300 rounded-lg file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-gray-900 file:text-white hover:file:bg-indigo-600 cursor-pointer') ?>
+                <label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">Product Cover Image</label>
+                <?= inputField('file', 'image-upload', '', '', 'block w-full text-xs text-slate-400 file:mr-3 file:py-2 file:px-4 file:rounded-lg file:border file:border-slate-600 file:text-xs file:font-semibold file:bg-slate-800 file:text-slate-200 hover:file:bg-slate-700 hover:file:text-white transition-all cursor-pointer') ?>
             </div>
         </div>
 
-        <div class="flex gap-4 pt-4">
-            <?= inputField('submit', 'submit', '', 'Submit Product', 'flex-1 py-3 bg-gray-900 text-white font-bold rounded-lg hover:bg-indigo-600 transition-all cursor-pointer') ?>
-            <?= inputField('reset', 'reset', '', 'Reset Form', 'flex-1 py-3 bg-gray-100 text-gray-700 font-semibold rounded-lg hover:bg-gray-200 transition-all cursor-pointer') ?>
+        <div class="flex gap-4 pt-4 border-t border-slate-700/60">
+            <?= inputField('submit', 'submit', '', 'Submit New Product', 'flex-1 py-3.5 bg-blue-600 hover:bg-blue-500 text-white font-bold text-sm rounded-xl transition-all shadow-md shadow-blue-600/10 cursor-pointer') ?>
+            <?= inputField('reset', 'reset', '', 'Reset Form', 'flex-1 py-3.5 bg-slate-800 hover:bg-slate-700 text-slate-300 font-semibold text-sm rounded-xl transition-all border border-slate-700/60 cursor-pointer') ?>
         </div>
     </form>
 </div>

@@ -55,44 +55,45 @@ $stmt->bindParam(':id', $id, PDO::PARAM_INT);
 $stmt->execute();
 $results = $stmt->fetch(PDO::FETCH_ASSOC);
 ?>
-
-<div class="max-w-3xl mx-auto py-12 px-4">
-    <div class="bg-white rounded-2xl shadow-xl border border-gray-100 overflow-hidden">
-        <div class="bg-gray-50 px-8 py-6 border-b border-gray-100">
-            <h2 class="text-2xl font-bold text-gray-800">Member Profile</h2>
-            <p class="text-sm text-gray-500">View detailed information for <?= e($results['name'] ?? 'Member') ?></p>
+<div class="max-w-4xl mx-auto py-10 px-4">
+    <div class="bg-slate-800/40 backdrop-blur-md rounded-2xl shadow-xl border border-slate-700/60 overflow-hidden">
+        <div class="bg-slate-800/60 px-8 py-6 border-b border-slate-700/60">
+            <h2 class="text-xl font-bold text-white tracking-wide">Member Profile</h2>
+            <p class="text-sm text-slate-400 mt-1">Review full identity records for <span class="text-blue-400 font-medium"><?= e($results['name'] ?? 'Member') ?></span></p>
         </div>
 
         <form action="" method="post" enctype="multipart/form-data" class="p-8">
             <div class="flex flex-col md:flex-row gap-10">
-                <div class="flex-shrink-0 flex flex-col items-center gap-6">
+                
+                <div class="flex-shrink-0 flex flex-col items-center gap-5 w-full md:w-52">
                     <div class="relative group">
+                        <div class="absolute -inset-0.5 bg-gradient-to-b from-blue-500 to-indigo-600 rounded-2xl opacity-40 blur group-hover:opacity-70 transition duration-300"></div>
                         <img src="<?= !empty($results['image']) ? '../uploaded_img/' . e($results['image']) : '../images/default-avatar.png' ?>" 
                              alt="User Image" 
-                             class="w-48 h-48 rounded-2xl object-cover shadow-lg border-4 border-white">
+                             class="relative w-48 h-48 rounded-2xl object-cover shadow-2xl border border-slate-600/50 bg-slate-900">
                     </div>
                     
-                    <div class="w-full">
-                        <label class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Change Image</label>
-                        <input type="file" name="update_image" class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-gray-900 file:text-white hover:file:bg-indigo-600 transition-all cursor-pointer">
+                    <div class="w-full mt-2">
+                        <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-2 text-center md:text-left">Change Profile Image</label>
+                        <input type="file" name="update_image" class="block w-full text-xs text-slate-400 file:mr-3 file:py-2 file:px-3 file:rounded-lg file:border file:border-slate-600 file:text-xs file:font-semibold file:bg-slate-800 file:text-slate-200 hover:file:bg-slate-700 hover:file:text-white transition-all cursor-pointer">
                     </div>
                 </div>
 
-                <div class="flex-grow space-y-6">
-                    <div class="grid grid-cols-1 gap-6">
+                <div class="flex-grow space-y-5">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
                         <?php 
                         $fields = [
-                            'Username' => $results['username'] ?? '',
-                            'Full Name' => $results['name'] ?? '',
-                            'Email' => $results['email'] ?? '',
-                            'Phone' => $results['phone_number'] ?? '',
-                            'Address' => $results['address'] ?? ''
+                            'Username' => ['val' => $results['username'] ?? '', 'fullWidth' => false],
+                            'Full Name' => ['val' => $results['name'] ?? '', 'fullWidth' => false],
+                            'Email Address' => ['val' => $results['email'] ?? '', 'fullWidth' => true],
+                            'Phone Number' => ['val' => $results['phone_number'] ?? '', 'fullWidth' => false],
+                            'Postal Address' => ['val' => $results['address'] ?? '', 'fullWidth' => true]
                         ];
-                        foreach($fields as $label => $value): ?>
-                            <div>
-                                <label class="block text-sm font-semibold text-gray-600 mb-1"><?= $label ?></label>
-                                <div class="w-full bg-gray-50 border border-gray-200 rounded-lg p-3 text-gray-700 font-medium">
-                                    <?= e($value) ?: 'N/A' ?>
+                        foreach($fields as $label => $data): ?>
+                            <div class="<?= $data['fullWidth'] ? 'sm:col-span-2' : '' ?>">
+                                <label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1.5"><?= $label ?></label>
+                                <div class="w-full bg-slate-900/60 border border-slate-700/50 text-slate-200 rounded-xl p-3.5 text-sm font-medium shadow-inner">
+                                    <?= e($data['val']) ?: '<span class="text-slate-600 italic font-normal">Not Provided</span>' ?>
                                 </div>
                             </div>
                         <?php endforeach; ?>
@@ -100,14 +101,14 @@ $results = $stmt->fetch(PDO::FETCH_ASSOC);
                 </div>
             </div>
 
-            <div class="mt-10 flex items-center justify-end gap-4 pt-6 border-t border-gray-100">
+            <div class="mt-8 flex items-center justify-end gap-4 pt-6 border-t border-slate-700/60">
                 <a href="member-listing.php" 
-                   class="px-6 py-2.5 text-sm font-semibold text-gray-600 hover:text-gray-900 transition-colors">
-                   Back to List
+                   class="px-5 py-2.5 text-xs font-semibold text-slate-400 hover:text-white transition-colors">
+                    Back to List
                 </a>
                 <button type="submit" name="upload_image" 
-                        class="px-6 py-2.5 bg-gray-900 hover:bg-indigo-600 text-white text-sm font-bold rounded-lg transition-all shadow-md">
-                    Upload New Image
+                        class="px-5 py-2.5 bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold rounded-xl transition-all shadow-md shadow-blue-600/10">
+                    Save New Image
                 </button>
             </div>
         </form>
