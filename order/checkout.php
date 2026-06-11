@@ -81,7 +81,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['checkout'])) {
         set_cart(); // Clear cart
 
         temp('info', 'Order placed successfully!');
-        header("Location: detail.php?id=$orderId");
+        header("Location: payment.php?id=$orderId");
         exit;
     } catch (Exception $e) {
         $_db->rollBack();

@@ -152,7 +152,7 @@ $_title = 'Order | Detail';
                 Back to Purchase History
             </a>
             
-            <a class="w-full sm:w-auto inline-flex items-center justify-center space-x-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-6 py-2.5 rounded-xl transition duration-150 active:scale-[0.99] cursor-pointer shadow-md shadow-emerald-500/10 text-sm tracking-wide" href="payment.php">
+            <a class="w-full sm:w-auto inline-flex items-center justify-center space-x-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-6 py-2.5 rounded-xl transition duration-150 active:scale-[0.99] cursor-pointer shadow-md shadow-emerald-500/10 text-sm tracking-wide" href="payment.php?id=<?= intval($id) ?>">
                 <span>Proceed to Payment</span>
                 <span>➔</span>
             </a>
