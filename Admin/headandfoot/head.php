@@ -140,45 +140,43 @@ $search = '';
 
         <div class="flex-1 flex flex-col min-w-0 overflow-hidden">
             
-            <header class="w-full bg-gray-900 border-b border-gray-800 px-4 sm:px-6 lg:px-8 py-5 flex items-center justify-between transition-all duration-200 z-10 flex-shrink-0">
-                <div class="flex items-center gap-4 flex-shrink-0">
-                    <button id="mobile-menu" class="lg:hidden text-2xl text-gray-400 hover:text-white transition-colors">
-                        <span class="la la-bars"></span>
-                    </button>
-                    <div>
-                        <h2 class="text-2xl font-semibold text-white tracking-tight"><?php echo htmlspecialchars($adminPageTitle); ?></h2>
-                        <p class="text-sm text-gray-500 mt-0.5"><?php echo htmlspecialchars($adminPageSubtitle); ?></p>
-                    </div>
+            <header class="bg-gray-900 border-b border-gray-800 px-8 py-5 flex items-center justify-between w-full">
+            <div class="flex items-center gap-4">
+                <button id="mobile-menu" class="lg:hidden text-3xl text-gray-400 hover:text-white">
+                    <span class="la la-bars"></span>
+                </button>
+                
+                <div>
+                    <h1 class="text-2xl font-semibold text-white">Dashboard</h1>
+                    <p class="text-sm text-gray-500">Overview of your store performance.</p>
                 </div>
+            </div>
 
-                <div class="flex items-center gap-6 flex-grow lg:flex-1 justify-end max-w-full pl-6">
-                    <form method="get" class="hidden md:flex items-center bg-gray-800/60 border border-gray-700/40 rounded-2xl px-4 py-2.5 w-96 focus-within:w-[36rem] lg:focus-within:w-[44rem] transition-all duration-300 ease-in-out shadow-inner">
-                        <span class="la la-search text-gray-500 text-lg"></span>
-                        <input 
-                            name="search" 
-                            type="search" 
-                            placeholder="Search products, orders..." 
-                            value="<?php echo htmlspecialchars($search); ?>"
-                            class="bg-transparent border-0 outline-none focus:outline-none focus:ring-0 ml-3 text-sm flex-1 placeholder-gray-500 text-slate-200"
-                        >
-                    </form>
+            <div class="flex items-center gap-6">
+                <!-- Search -->
+                <form method="get" class="hidden md:flex items-center bg-gray-800 rounded-2xl px-5 py-2.5 w-80 focus-within:ring-2 focus-within:ring-blue-500 transition-all">
+                    <span class="la la-search text-gray-400"></span>
+                    <input name="search" type="search" placeholder="Search products, orders..." 
+                           class="bg-transparent outline-none ml-3 text-sm w-full placeholder-gray-500">
+                </form>
 
-                    <button class="relative p-3 bg-gray-800/40 hover:bg-gray-800 border border-gray-800 rounded-2xl transition-all duration-150 flex-shrink-0 group">
-                        <span class="la la-bell text-2xl text-gray-400 group-hover:text-gray-200 transition-colors"></span>
-                        <span class="absolute top-2 right-2 w-5 h-5 bg-red-500 text-[10px] font-bold flex items-center justify-center rounded-full text-white shadow-md shadow-red-500/20">3</span>
-                    </button>
+                <!-- Notifications -->
+                <button class="relative p-3 hover:bg-gray-800 rounded-2xl transition-colors">
+                    <span class="la la-bell text-2xl text-gray-400"></span>
+                    <span class="absolute top-2 right-2 px-1.5 text-[10px] bg-red-500 rounded-full">3</span>
+                </button>
 
-                    <div class="flex items-center gap-3 pl-3 border-l border-gray-800 flex-shrink-0">
-                        <img src="amos2.jpg" alt="Admin" 
-                             class="w-10 h-10 rounded-2xl object-cover border border-gray-700/60 shadow-md">
-                        <div class="hidden sm:block text-left">
-                            <div class="font-semibold text-sm text-slate-200 leading-tight"><?php echo htmlspecialchars($query['username']); ?></div>
-                            <div class="text-[11px] text-emerald-400 font-medium flex items-center gap-1.5 mt-0.5">
-                                <span class="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse"></span> Online
-                            </div>
+                <!-- User -->
+                <div class="flex items-center gap-3">
+                    <img src="amos2.jpg" alt="Admin" class="w-9 h-9 rounded-2xl object-cover border border-gray-700">
+                    <div>
+                        <div class="font-medium text-white text-sm"><?php echo htmlspecialchars($query['username']); ?></div>
+                        <div class="text-xs text-emerald-400 flex items-center gap-1">
+                            <span class="w-2 h-2 bg-emerald-400 rounded-full"></span> Online
                         </div>
                     </div>
                 </div>
-            </header>
+            </div>
+        </header>
 
             <main class="flex-1 overflow-y-auto bg-gray-950 p-6 md:p-8">
