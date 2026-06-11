@@ -162,3 +162,5 @@ if (is_post()) {
         </div>
     </form>
 </div>
+
+<?php require __DIR__ . '/headandFoot/foot.php'; ?>

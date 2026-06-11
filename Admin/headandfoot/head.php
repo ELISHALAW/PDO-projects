@@ -47,7 +47,6 @@ $search = '';
     <link rel="stylesheet" href="https://maxst.icons8.com/vue-static/landings/line-awesome/line-awesome/1.3.0/css/line-awesome.min.css">
     <link rel="stylesheet" href="../css/style.css">
     <style>
-        /* CSS Cleanups */
         .nav-link {
             transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
         }
@@ -59,8 +58,6 @@ $search = '';
             color: white;
             border-left: 4px solid #3b82f6;
         }
-        
-        /* Smooth placeholder tracking transitions */
         input::placeholder {
             color: #6b7280 !important;
         }
@@ -140,43 +137,40 @@ $search = '';
 
         <div class="flex-1 flex flex-col min-w-0 overflow-hidden">
             
-            <header class="bg-gray-900 border-b border-gray-800 px-8 py-5 flex items-center justify-between w-full">
-            <div class="flex items-center gap-4">
-                <button id="mobile-menu" class="lg:hidden text-3xl text-gray-400 hover:text-white">
-                    <span class="la la-bars"></span>
-                </button>
-                
-                <div>
-                    <h1 class="text-2xl font-semibold text-white">Dashboard</h1>
-                    <p class="text-sm text-gray-500">Overview of your store performance.</p>
-                </div>
-            </div>
-
-            <div class="flex items-center gap-6">
-                <!-- Search -->
-                <form method="get" class="hidden md:flex items-center bg-gray-800 rounded-2xl px-5 py-2.5 w-80 focus-within:ring-2 focus-within:ring-blue-500 transition-all">
-                    <span class="la la-search text-gray-400"></span>
-                    <input name="search" type="search" placeholder="Search products, orders..." 
-                           class="bg-transparent outline-none ml-3 text-sm w-full placeholder-gray-500">
-                </form>
-
-                <!-- Notifications -->
-                <button class="relative p-3 hover:bg-gray-800 rounded-2xl transition-colors">
-                    <span class="la la-bell text-2xl text-gray-400"></span>
-                    <span class="absolute top-2 right-2 px-1.5 text-[10px] bg-red-500 rounded-full">3</span>
-                </button>
-
-                <!-- User -->
-                <div class="flex items-center gap-3">
-                    <img src="amos2.jpg" alt="Admin" class="w-9 h-9 rounded-2xl object-cover border border-gray-700">
+            <header class="bg-gray-900 border-b border-gray-800 px-8 py-5 flex items-center justify-between">
+                <div class="flex items-center gap-4">
+                    <button id="mobile-menu" class="lg:hidden text-3xl text-gray-400 hover:text-white">
+                        <span class="la la-bars"></span>
+                    </button>
+                    
                     <div>
-                        <div class="font-medium text-white text-sm"><?php echo htmlspecialchars($query['username']); ?></div>
-                        <div class="text-xs text-emerald-400 flex items-center gap-1">
-                            <span class="w-2 h-2 bg-emerald-400 rounded-full"></span> Online
+                        <h1 class="text-2xl font-semibold text-white"><?= htmlspecialchars($adminPageTitle) ?></h1>
+                        <p class="text-sm text-gray-500"><?= htmlspecialchars($adminPageSubtitle) ?></p>
+                    </div>
+                </div>
+
+                <div class="flex items-center gap-6">
+                    <form method="get" class="hidden md:flex items-center bg-gray-800 rounded-2xl px-5 py-2.5 w-80 focus-within:ring-2 focus-within:ring-blue-500 transition-all">
+                        <span class="la la-search text-gray-400"></span>
+                        <input name="search" type="search" placeholder="Search products, orders..." 
+                            class="bg-transparent outline-none ml-3 text-sm w-full placeholder-gray-500">
+                    </form>
+
+                    <button class="relative p-3 hover:bg-gray-800 rounded-2xl transition-colors">
+                        <span class="la la-bell text-2xl text-gray-400"></span>
+                        <span class="absolute top-2 right-2 px-1.5 text-[10px] bg-red-500 rounded-full">3</span>
+                    </button>
+
+                    <div class="flex items-center gap-3">
+                        <img src="amos2.jpg" alt="Admin" class="w-9 h-9 rounded-2xl object-cover border border-gray-700">
+                        <div>
+                            <div class="font-medium text-white text-sm"><?php echo htmlspecialchars($query['username']); ?></div>
+                            <div class="text-xs text-emerald-400 flex items-center gap-1">
+                                <span class="w-2 h-2 bg-emerald-400 rounded-full"></span> Online
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
         </header>
 
-            <main class="flex-1 overflow-y-auto bg-gray-950 p-6 md:p-8">
+        <main class="flex-1 overflow-y-auto bg-gray-950 p-6 md:p-8">
