@@ -11,6 +11,34 @@ if (is_post()) {
     redirect(); // refresh page
 }
 
+// Handle wishlist actions
+if (isset($_POST['wishlist_action'])) {
+    $action = req('wishlist_action');
+    $product_id = req('product_id');
+    
+    if (!isset($_SESSION['id'])) {
+        echo "<script>alert('Please log in first'); window.location.href='../login.php';</script>";
+        exit();
+    }
+    
+    if ($action === 'add') {
+        $error = add_to_wishlist($_SESSION['id'], $product_id);
+        if ($error) {
+            echo "<script>alert('$error');</script>";
+        } else {
+            echo "<script>alert('Added to wishlist!');</script>";
+        }
+    } elseif ($action === 'remove') {
+        $error = remove_from_wishlist($_SESSION['id'], $product_id);
+        if ($error) {
+            echo "<script>alert('$error');</script>";
+        } else {
+            echo "<script>alert('Removed from wishlist!');</script>";
+        }
+    }
+    redirect(); // refresh page
+}
+
 // Get product ID from request
 $id = req('id');
 
@@ -98,6 +126,7 @@ if (!$p) {
                 <?php
                 $cart = get_cart();
                 $unit = $cart[$p->product_id] ?? 0;
+                $in_wishlist = isset($_SESSION['id']) && is_in_wishlist($_SESSION['id'], $p->product_id);
                 ?>
                 <form method="post" class="flex flex-wrap items-center gap-3">
                     <?= html_hidden('id', $p->product_id) ?>
@@ -124,6 +153,32 @@ if (!$p) {
                         </span>
                     <?php endif; ?>
                 </form>
+                
+                <!-- Wishlist Button -->
+                <?php if (isset($_SESSION['id'])): ?>
+                <form method="post" class="mt-3">
+                    <input type="hidden" name="product_id" value="<?= $p->product_id ?>">
+                    <button 
+                        type="submit" 
+                        name="wishlist_action" 
+                        value="<?= $in_wishlist ? 'remove' : 'add' ?>"
+                        class="w-full <?= $in_wishlist ? 'bg-pink-100 hover:bg-pink-200 text-pink-700 border border-pink-300' : 'bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-200' ?> font-semibold px-4 py-2 rounded-lg transition duration-150 active:scale-[0.98] cursor-pointer flex items-center justify-center space-x-2 text-sm"
+                    >
+                        <span><?= $in_wishlist ? '❤️' : '🤍' ?></span>
+                        <span><?= $in_wishlist ? 'In Wishlist' : 'Add to Wishlist' ?></span>
+                    </button>
+                </form>
+                <?php else: ?>
+                <div class="mt-3">
+                    <a 
+                        href="../login.php" 
+                        class="w-full bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold px-4 py-2 rounded-lg transition duration-150 active:scale-[0.98] cursor-pointer flex items-center justify-center space-x-2 text-sm"
+                    >
+                        <span>🤍</span>
+                        <span>Login to Add Wishlist</span>
+                    </a>
+                </div>
+                <?php endif; ?>
             </div>
 
         </div>

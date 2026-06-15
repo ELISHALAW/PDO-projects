@@ -359,3 +359,108 @@ function get_mail()
 
     return $m;
 }
+
+// ============================================================================
+// CART FUNCTIONS (Additional)
+// ============================================================================
+
+function remove_from_cart($id)
+{
+    $cart = get_cart();
+    unset($cart[$id]);
+    set_cart($cart);
+}
+
+// ============================================================================
+// WISHLIST FUNCTIONS (Database-backed)
+// ============================================================================
+
+/**
+ * Add product to user's wishlist
+ */
+function add_to_wishlist($user_id, $product_id)
+{
+    global $_db;
+    
+    // Validation
+    if (!is_exists($product_id, 'product', 'product_id')) {
+        return "Product does not exist.";
+    }
+    
+    if (!is_exists($user_id, 'user', 'user_id')) {
+        return "User does not exist.";
+    }
+    
+    // Check if already in wishlist
+    $stm = $_db->prepare("SELECT COUNT(*) FROM wishlist WHERE user_id = ? AND product_id = ?");
+    $stm->execute([$user_id, $product_id]);
+    if ($stm->fetchColumn() > 0) {
+        return "Product already in wishlist.";
+    }
+    
+    // Add to wishlist
+    $stm = $_db->prepare("INSERT INTO wishlist (user_id, product_id, added_at) VALUES (?, ?, NOW())");
+    if ($stm->execute([$user_id, $product_id])) {
+        return null; // no error
+    } else {
+        return "Failed to add to wishlist.";
+    }
+}
+
+/**
+ * Remove product from user's wishlist
+ */
+function remove_from_wishlist($user_id, $product_id)
+{
+    global $_db;
+    
+    $stm = $_db->prepare("DELETE FROM wishlist WHERE user_id = ? AND product_id = ?");
+    if ($stm->execute([$user_id, $product_id])) {
+        return null; // no error
+    } else {
+        return "Failed to remove from wishlist.";
+    }
+}
+
+/**
+ * Get all wishlist items for a user
+ */
+function get_wishlist($user_id)
+{
+    global $_db;
+    
+    $stm = $_db->prepare("
+        SELECT w.wishlist_id, w.user_id, w.product_id, w.added_at, 
+               p.product_id, p.Product_name, p.price, p.image, p.quantity, p.detail, p.category_id
+        FROM wishlist w
+        JOIN product p ON w.product_id = p.product_id
+        WHERE w.user_id = ?
+        ORDER BY w.added_at DESC
+    ");
+    $stm->execute([$user_id]);
+    return $stm->fetchAll(PDO::FETCH_OBJ);
+}
+
+/**
+ * Get total count of items in user's wishlist
+ */
+function wishlist_quantity($user_id)
+{
+    global $_db;
+    
+    $stm = $_db->prepare("SELECT COUNT(*) FROM wishlist WHERE user_id = ?");
+    $stm->execute([$user_id]);
+    return (int)$stm->fetchColumn();
+}
+
+/**
+ * Check if a product is in user's wishlist
+ */
+function is_in_wishlist($user_id, $product_id)
+{
+    global $_db;
+    
+    $stm = $_db->prepare("SELECT COUNT(*) FROM wishlist WHERE user_id = ? AND product_id = ?");
+    $stm->execute([$user_id, $product_id]);
+    return $stm->fetchColumn() > 0;
+}
