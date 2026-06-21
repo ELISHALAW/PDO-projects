@@ -183,13 +183,5 @@ $cart = get_cart();
 <?php
 include '../foot.php';
 
-// Utility Functions
-function remove_from_cart($id)
-{
-    $cart = get_cart();
-    if (isset($cart[$id])) {
-        unset($cart[$id]);
-        set_cart($cart);
-    }
-}
+
 ?>
