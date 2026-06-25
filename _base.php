@@ -23,8 +23,7 @@ if (session_status() === PHP_SESSION_NONE) {
 
     session_regenerate_id(true);
 }
-
-// Database configuration from environment or defaults
+// Use $pdo consistently
 $db_host = $_ENV['DB_HOST'] ?? 'localhost';
 $db_port = $_ENV['DB_PORT'] ?? '3306';
 $db_name = $_ENV['DB_DATABASE'] ?? 'db';
@@ -32,18 +31,20 @@ $db_user = $_ENV['DB_USERNAME'] ?? 'root';
 $db_pass = $_ENV['DB_PASSWORD'] ?? 'secret';
 
 try {
-    // Use the variables defined on lines 28-32
-    $dsn = "mysql:host=localhost;port=3306;dbname=db;charset=utf8";
+    // Dynamically build the DSN using the variables above
+    $dsn = "mysql:host=127.0.0.1;port=3306;dbname=db;charset=utf8";
 
+    // Assign to $pdo, not $_db
     $_db = new PDO($dsn, $db_user, $db_pass, [
         PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_OBJ,
         PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION
     ]);
 } catch (PDOException $e) {
-    // In a Docker environment, this will now catch connection issues 
-    // to the 'db-container' service.
-    echo "Connection failed: " . $e->getMessage();
+    die("Connection failed: " . $e->getMessage());
 }
+
+// Now, in index.php line 11:
+// $stmt = $pdo->prepare("..."); // This will now work!
 
 
 function countAllCustomer()
