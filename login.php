@@ -14,7 +14,7 @@ if (is_post()) {
     } elseif (!filter_var($usernameEmail, FILTER_VALIDATE_EMAIL)) {
         $errors[] = "Invalid email format.";
     } else {
-        // Fetch user including the security columns
+        // Fetch user including the security columns 
         $stmt = $_db->prepare("SELECT * FROM user WHERE email = :email");
         $stmt->execute([':email' => $usernameEmail]);
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -23,14 +23,12 @@ if (is_post()) {
             $currentTime = new DateTime();
             $blockUntil = $row['block_until'] ? new DateTime($row['block_until']) : null;
 
-            // Check if account is currently locked
             if ($blockUntil && $blockUntil > $currentTime) {
                 $diff = $currentTime->diff($blockUntil);
                 $errors[] = "Account locked. Try again in " . $diff->format('%i minutes, %s seconds');
             } else {
                 if (password_verify($password, $row['password'])) {
-                    // --- SUCCESS ---
-                    // Reset attempts and clear block
+                    // Success
                     $update = $_db->prepare("UPDATE user SET login_attempts = 0, block_until = NULL WHERE user_id = :id");
                     $update->execute([':id' => $row['user_id']]);
 
@@ -39,7 +37,6 @@ if (is_post()) {
                     $_SESSION['username'] = $row['username'];
                     $_SESSION['status'] = $row['status'];
 
-                    // Handle Remember Me
                     if (isset($_POST['remember'])) {
                         setcookie('remember_email', $usernameEmail, time() + (7 * 24 * 60 * 60), "/");
                     } else {
@@ -50,12 +47,11 @@ if (is_post()) {
                     header("Location: $location");
                     exit();
                 } else {
-                    // --- FAILURE ---
+                    // Failure
                     $newAttempts = $row['login_attempts'] + 1;
                     $lockTime = null;
 
                     if ($newAttempts >= 3) {
-                        // Set block for 15 minutes
                         $lockTime = date('Y-m-d H:i:s', strtotime('+15 minutes'));
                         $errors[] = "Too many failed attempts. Account locked for 15 minutes.";
                     } else {
@@ -79,7 +75,6 @@ if (is_post()) {
 ?>
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -105,6 +100,22 @@ if (is_post()) {
                     <?php displayError($errors); ?>
                 </div>
             <?php endif; ?>
+
+            <!-- Google Login Button -->
+            <a href="google-login.php" 
+               class="flex items-center justify-center w-full gap-3 bg-white hover:bg-gray-50 border border-gray-300 text-slate-700 font-semibold py-2.5 px-4 rounded-xl transition duration-200 shadow">
+                <img src="https://developers.google.com/identity/images/g-logo.png" alt="Google" width="20">
+                Sign in with Google
+            </a>
+
+            <div class="relative">
+                <div class="absolute inset-0 flex items-center">
+                    <div class="w-full border-t border-gray-300"></div>
+                </div>
+                <div class="relative flex justify-center text-sm">
+                    <span class="bg-white/90 px-4 text-slate-500">or continue with email</span>
+                </div>
+            </div>
 
             <div class="space-y-4 [&_input]:w-full [&_input]:px-4 [&_input]:py-2.5 [&_input]:border [&_input]:border-slate-200 [&_input]:rounded-xl [&_input]:text-slate-800 [&_input]:transition [&_input]:duration-200 [&_input]:focus:outline-none [&_input]:focus:ring-2 [&_input]:focus:ring-blue-500/20 [&_input]:focus:border-blue-500 [&_input]:bg-white/80">
                 <div>
