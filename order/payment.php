@@ -78,7 +78,7 @@ if (!$stripePublishableKey) {
     </div>
 
     <script>
-        const stripe = Stripe('<?= htmlspecialchars($stripePublishableKey) ?>');
+        const stripe = Stripe('<?= e($stripePublishableKey) ?>');
         const elements = stripe.elements();
         const cardElement = elements.create('card');
         cardElement.mount('#card-element');
